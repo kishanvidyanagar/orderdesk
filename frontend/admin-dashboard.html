@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Admin Dashboard - OrderDesk</title>
+
+  <!-- YOUR THEME -->
+  <link rel="stylesheet" href="../frontend/css/stylesheet.css" />
+</head>
+
+<body>
+
+  <div class="app-container">
+
+    <!-- HEADER -->
+    <header class="app-header">
+
+      <div class="brand">
+        <h1>Admin Dashboard</h1>
+        <p>Manage hotels & features</p>
+      </div>
+
+      <button class="button secondary" id="logoutAdmin">
+        Logout
+      </button>
+
+    </header>
+
+
+    <!-- ADD HOTEL -->
+    <section class="card">
+
+      <div class="page-header">
+        <h2>Add Hotel</h2>
+        <p>Create hotel (appears in Owner/Waiter dropdown)</p>
+      </div>
+
+      <form id="hotelForm">
+
+        <div class="field-group">
+          <label>Hotel Name</label>
+          <input id="hotelName" type="text" placeholder="Enter hotel name" required />
+        </div>
+
+        <button class="button primary" type="submit">
+          Add Hotel
+        </button>
+
+      </form>
+
+    </section>
+
+
+    <!-- HOTEL LIST WITH PER-HOTEL TOGGLES -->
+    <section class="card">
+
+      <div class="page-header">
+        <h2>Hotels</h2>
+        <p>Enable/disable features per hotel</p>
+      </div>
+
+      <div id="hotelList" class="menu-list"></div>
+
+    </section>
+
+  </div>
+
+
+  <!-- TOAST MESSAGE -->
+  <div id="messageBox" class="message hidden"></div>
+
+
+  <!-- SCRIPT -->
+  <script type="module" src="js/admin-dashboard.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>OrderDesk - Sales Report</title>
+
+  <link rel="stylesheet" href="../frontend/css/stylesheet.css" />
+</head>
+
+<body>
+
+  <div class="app-container">
+
+    <header class="app-header">
+
+      <div class="brand">
+        <h1>OrderDesk</h1>
+        <p>Sales & Revenue Reports</p>
+      </div>
+
+      <button class="hamburger" id="hamburger">☰</button>
+
+      <div class="nav-actions" id="navMenu">
+
+        <a href="dashboard.html" class="button secondary">
+          Dashboard
+        </a>
+
+        <a id="menuNav" href="menu.html" class="button secondary">
+          Menu
+        </a>
+
+
+        <a href="orders.html" class="button secondary">
+          Orders
+        </a>
+
+
+        <a id="salesNav" href="sales.html" class="button secondary">
+          Sales
+        </a>
+
+        <button id="logoutBtn" class="button secondary">
+          Logout
+        </button>
+
+      </div>
+
+    </header>
+
+    <main>
+
+      <div class="page-header">
+
+        <div>
+          <h2>Sales Report</h2>
+          <p>
+            Daily revenue and order history
+          </p>
+        </div>
+
+      </div>
+
+      <!-- STATS -->
+
+      <div class="stats-grid">
+
+        <article class="stat-card">
+
+          <span>
+            Today's Sales
+          </span>
+
+          <strong id="reportSales">
+            ₹0
+          </strong>
+
+        </article>
+
+        <article class="stat-card">
+
+          <span>
+            Today's Orders
+          </span>
+
+          <strong id="reportOrders">
+            0
+          </strong>
+
+        </article>
+
+        <article class="stat-card full-width">
+
+          <span>
+            Lifetime Revenue
+          </span>
+
+          <strong id="lifetimeRevenue">
+            ₹0
+          </strong>
+
+        </article>
+
+      </div>
+
+      <!-- SALES HISTORY -->
+
+      <div class="card">
+
+        <div class="card-header">
+
+          <div>
+
+            <h3>
+              Order History
+            </h3>
+
+            <p class="small-text">
+              Completed customer orders
+            </p>
+
+          </div>
+
+          <span id="historyCount" class="badge">
+            0 Orders
+          </span>
+
+        </div>
+
+        <div id="salesHistory" class="sales-history"></div>
+
+      </div>
+
+    </main>
+
+  </div>
+
+  <div id="messageBox" class="message hidden"></div>
+
+  <script type="module" src="js/sales.js"></script>
+  <script type="module" src="js/common.js"></script>
+
+</body>
+
+</html>

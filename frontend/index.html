@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>OrderDesk - Login</title>
+
+  <link rel="stylesheet" href="../frontend/css/stylesheet.css" />
+</head>
+
+<body>
+
+  <div class="app-container">
+
+    <header class="app-header">
+      <div class="brand">
+        <h1>OrderDesk</h1>
+        <p>Restaurant & Hotel Management</p>
+      </div>
+    </header>
+
+    <main>
+
+      <section class="card auth-card">
+
+        <div class="auth-switch">
+          <button type="button" class="tab active" data-target="loginForm">
+            Login
+          </button>
+
+          <button type="button" class="tab" data-target="registerForm">
+            Register
+          </button>
+        </div>
+
+        <div class="auth-forms">
+
+          <!-- LOGIN -->
+
+          <form id="loginForm" class="auth-form active">
+
+            <h2>Login</h2>
+
+            <div class="field-group">
+              <label>Email</label>
+
+              <input id="loginEmail" type="email" required />
+            </div>
+
+            <div class="field-group">
+              <label>Password</label>
+
+              <input id="loginPassword" type="password" required />
+            </div>
+
+            <button type="submit" class="button primary">
+              Login
+            </button>
+
+          </form>
+
+          <!-- REGISTER -->
+
+          <form id="registerForm" class="auth-form">
+
+            <h2>Create Account</h2>
+
+            <div class="field-group">
+
+              <label>Account Type</label>
+
+              <div style="
+                display:flex;
+                gap:1rem;
+              ">
+
+                <label>
+                  <input type="radio" name="accountType" value="owner" checked />
+                  Hotel Owner
+                </label>
+
+                <label>
+                  <input type="radio" name="accountType" value="waiter" />
+                  Waiter
+                </label>
+
+              </div>
+
+            </div>
+
+            <!-- OWNER FIELDS -->
+
+            <div id="ownerFields">
+
+              <div class="field-row">
+
+                <div class="field-group">
+                  <label>Select Hotel</label>
+                  <select id="waiterHotel">
+                    <option value="">Choose Hotel</option>
+                  </select>
+                </div>
+
+                <div class="field-group">
+                  <label>Owner Name</label>
+
+                  <input id="ownerName" type="text" />
+                </div>
+
+              </div>
+
+              <div class="field-row">
+
+                <div class="field-group">
+                  <label>Phone</label>
+
+                  <input id="hotelPhone" type="text" />
+                </div>
+
+                <div class="field-group">
+                  <label>Email</label>
+
+                  <input id="hotelEmail" type="email" />
+                </div>
+
+              </div>
+
+            </div>
+
+            <!-- WAITER FIELDS -->
+
+            <div id="waiterFields" style="display:none;">
+
+              <div class="field-row">
+
+                <div class="field-group">
+
+                  <label>Waiter Name</label>
+
+                  <input id="waiterName" type="text" />
+
+                </div>
+
+                <div class="field-group">
+
+                  <label>Select Hotel</label>
+
+                  <select id="waiterHotel">
+
+                    <option value="">
+                      Choose Hotel
+                    </option>
+
+                  </select>
+
+                </div>
+
+              </div>
+
+              <div class="field-group">
+
+                <label>Email</label>
+
+                <input id="waiterEmail" type="email" />
+
+              </div>
+
+            </div>
+
+            <!-- PASSWORD -->
+
+            <div class="field-row">
+
+              <div class="field-group">
+
+                <label>Password</label>
+
+                <input id="regPassword" type="password" required />
+
+              </div>
+
+              <div class="field-group">
+
+                <label>Confirm Password</label>
+
+                <input id="regPasswordConfirm" type="password" required />
+
+              </div>
+
+            </div>
+
+            <button type="submit" class="button primary">
+              Create Account
+            </button>
+
+          </form>
+
+        </div>
+
+      </section>
+
+    </main>
+
+  </div>
+
+  <div id="messageBox" class="message hidden"></div>
+
+  <script type="module" src="js/auth.js"></script>
+  <script type="module" src="js/common.js"></script>
+
+</body>
+
+</html>

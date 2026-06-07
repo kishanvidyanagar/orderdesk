@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>OrderDesk - Menu Management</title>
+
+  <link rel="stylesheet" href="../frontend/css/stylesheet.css" />
+</head>
+
+<body>
+
+  <div class="app-container">
+
+    <header class="app-header">
+
+      <div class="brand">
+        <h1>OrderDesk</h1>
+        <p>Menu Management</p>
+      </div>
+
+      <button class="hamburger" id="hamburger">☰</button>
+
+      <div class="nav-actions" id="navMenu">
+
+        <a href="dashboard.html" class="button secondary">
+          Dashboard
+        </a>
+
+        <a id="menuNav" href="menu.html" class="button secondary">
+          Menu
+        </a>
+
+
+        <a href="orders.html" class="button secondary">
+          Orders
+        </a>
+
+
+        <a id="salesNav" href="sales.html" class="button secondary">
+          Sales
+        </a>
+
+        <button id="logoutBtn" class="button secondary">
+          Logout
+        </button>
+
+      </div>
+
+    </header>
+
+    <main>
+
+      <div class="page-header">
+
+        <div>
+          <h2>Menu Management</h2>
+          <p>
+            Add, edit and manage menu items
+          </p>
+        </div>
+
+      </div>
+
+      <div class="split-card">
+
+        <!-- LEFT -->
+
+        <div class="card">
+
+          <form id="menuForm">
+
+            <h3>Add Menu Item</h3>
+
+            <div class="field-group">
+
+              <label>
+                Item Name
+              </label>
+
+              <input type="text" id="itemName" required />
+
+            </div>
+
+            <div class="field-group">
+
+              <label>
+                Price
+              </label>
+
+              <input type="number" id="itemPrice" min="1" required />
+
+            </div>
+
+            <div class="field-group">
+
+              <label>
+                Category
+              </label>
+
+              <select id="itemCategory">
+
+                <option value="Breakfast">
+                  Breakfast
+                </option>
+
+                <option value="Snacks">
+                  Snacks
+                </option>
+
+                <option value="Main Course">
+                  Main Course
+                </option>
+
+                <option value="Beverages">
+                  Beverages
+                </option>
+
+                <option value="Dessert">
+                  Dessert
+                </option>
+
+              </select>
+
+            </div>
+
+            <div style="
+              display:flex;
+              gap:10px;
+              margin-top:16px;
+            ">
+
+              <button type="submit" class="button primary">
+                Save Item
+              </button>
+
+            </div>
+
+          </form>
+
+        </div>
+
+        <!-- RIGHT -->
+
+        <div class="card menu-list-card">
+
+          <div class="card-header">
+
+            <div>
+
+              <h3>
+                Current Menu
+              </h3>
+
+              <p class="small-text">
+                Available menu items
+              </p>
+
+            </div>
+
+            <span id="menuItemCount" class="badge">
+              0 Items
+            </span>
+
+          </div>
+
+          <div id="menuItemsList" class="menu-list"></div>
+
+        </div>
+
+      </div>
+
+    </main>
+
+  </div>
+
+  <div id="messageBox" class="message hidden"></div>
+
+  <script type="module" src="js/menu.js"></script>
+  <script type="module" src="js/common.js"></script>
+
+</body>
+
+</html>
