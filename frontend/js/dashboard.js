@@ -82,6 +82,7 @@ function loadGreeting() {
 }
 
 function loadOpenOrders() {
+
   const orders = Storage.getOrders()
     .filter(
       o =>
@@ -92,30 +93,68 @@ function loadOpenOrders() {
   openOrdersList.innerHTML = "";
 
   orders.forEach(order => {
+
+    const kitchenStatus =
+      order.kitchenStatus || "OPEN";
+
     openOrdersList.insertAdjacentHTML(
       "beforeend",
       `
       <div class="history-item compact">
-        <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px;">
+
+        <div style="
+          display:flex;
+          justify-content:space-between;
+          align-items:flex-start;
+          gap:12px;
+        ">
+
           <div>
-            <h4>Table ${order.tableNumber}</h4>
-            <p>${formatDate(order.orderDate)}</p>
-            <strong>${formatCurrency(order.totalAmount)}</strong>
+
+            <h4>
+              Table ${order.tableNumber}
+            </h4>
+
+            <p>
+              ${formatDate(order.orderDate)}
+            </p>
+
+            <strong>
+              ${formatCurrency(order.totalAmount)}
+            </strong>
+
+            <p style="
+              margin-top:8px;
+              font-weight:bold;
+            ">
+              Kitchen Status:
+              ${kitchenStatus}
+            </p>
+
           </div>
+
           <button
             class="button primary sm flat"
-            onclick="window.location.href='orders.html?table=${order.tableNumber}'"
-            style="white-space: nowrap; font-size: 0.75rem; padding: 6px 10px;"
+            onclick="
+              window.location.href=
+              'orders.html?table=${order.tableNumber}'
+            "
+            style="
+              white-space:nowrap;
+              font-size:0.75rem;
+              padding:6px 10px;
+            "
           >
             Continue Order
           </button>
+
         </div>
+
       </div>
-    `
+      `
     );
   });
 }
-
 function loadTableStatus() {
   tableStatusGrid.innerHTML = "";
 
