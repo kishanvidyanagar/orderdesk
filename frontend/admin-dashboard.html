@@ -8,7 +8,7 @@
   <title>Admin Dashboard - OrderDesk</title>
 
   <!-- YOUR THEME -->
-  <link rel="stylesheet" href="../frontend/css/stylesheet.css" />
+  <link rel="stylesheet" href="css/stylesheet.css" />
 </head>
 
 <body>
@@ -23,19 +23,24 @@
         <p>Manage hotels & features</p>
       </div>
 
-      <button class="button secondary" id="logoutAdmin">
-        Logout
-      </button>
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <button class="button secondary" id="changeAdminPasswordBtn">
+          Change Password
+        </button>
+        <button class="button secondary" id="logoutAdmin">
+          Logout
+        </button>
+      </div>
 
     </header>
 
 
-    <!-- ADD HOTEL -->
+    <!-- HOTELS SECTION -->
     <section class="card">
 
       <div class="page-header">
-        <h2>Add Hotel</h2>
-        <p>Create hotel (appears in Owner/Waiter dropdown)</p>
+        <h2>Hotels</h2>
+        <p>Create and manage hotels</p>
       </div>
 
       <form id="hotelForm">
@@ -51,18 +56,54 @@
 
       </form>
 
+      <div id="hotelList" class="menu-list"></div>
+
     </section>
 
-
-    <!-- HOTEL LIST WITH PER-HOTEL TOGGLES -->
+    <!-- OWNERS SECTION -->
     <section class="card">
 
       <div class="page-header">
-        <h2>Hotels</h2>
-        <p>Enable/disable features per hotel</p>
+        <h2>Owners</h2>
+        <p>Create and manage hotel owners</p>
       </div>
 
-      <div id="hotelList" class="menu-list"></div>
+      <form id="ownerForm">
+
+        <div class="field-row">
+          <div class="field-group">
+            <label>Hotel</label>
+            <select id="ownerHotel" class="hotelSelect" required></select>
+          </div>
+          <div class="field-group">
+            <label>Owner Name</label>
+            <input id="ownerName" type="text" placeholder="Enter owner name" required />
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field-group">
+            <label>Phone</label>
+            <input id="ownerPhone" type="text" placeholder="Enter phone number" required />
+          </div>
+          <div class="field-group">
+            <label>Login ID</label>
+            <input id="ownerLoginId" type="text" placeholder="Enter unique login ID" required />
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label>Password</label>
+          <input id="ownerPassword" type="password" placeholder="Enter password" required />
+        </div>
+
+        <button class="button primary" type="submit">
+          Create Owner Account
+        </button>
+
+      </form>
+
+      <div id="ownerList" class="menu-list"></div>
 
     </section>
 

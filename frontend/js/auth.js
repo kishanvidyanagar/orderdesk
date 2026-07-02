@@ -1,10 +1,10 @@
 import { Storage } from "./storage.js";
 
 /* ==================================
-   AUTH CLASS
+   AUTH CLASS - LoginId Based
 ================================== */
 
-class MockAuth {
+class OrderDeskAuth {
   constructor() {
     this.currentUser = Storage.getCurrentUser();
   }
@@ -13,37 +13,70 @@ class MockAuth {
     return this.currentUser;
   }
 
-  async login(email, password) {
-    const hotels = Storage.getHotels();
+  /**
+   * Login with loginId and password
+   * Supports: Admin, Owner, Waiter
+   */
+  async login(loginId, password) {
+    if (!loginId || !password) {
+      throw new Error("Login ID and password are required");
+    }
+
+    // Try Admin login first
+    const admin = Storage.getAdminByLoginId(loginId);
+    if (admin && admin.password === password) {
+      const authUser = {
+        uid: admin.adminId,
+        adminId: admin.adminId,
+        loginId: admin.loginId,
+        role: "admin"
+      };
+      Storage.saveCurrentUser(authUser);
+      this.currentUser = authUser;
+      return authUser;
+    }
+
+    // Try Owner login
+    const owner = Storage.getOwnerByLoginId(loginId);
+    if (owner && owner.password === password) {
+      if (!owner.enabled) {
+        throw new Error("Owner account is disabled");
+      }
+      const authUser = {
+        uid: owner.ownerId,
+        ownerId: owner.ownerId,
+        hotelId: owner.hotelId,
+        hotelName: owner.hotelName,
+        loginId: owner.loginId,
+        ownerName: owner.ownerName,
+        role: "owner"
+      };
+      Storage.saveCurrentUser(authUser);
+      this.currentUser = authUser;
+      return authUser;
+    }
+
+    // Try Waiter login
     const waiters = Storage.getWaiters();
-
-    let user = Object.values(hotels).find(h => h.email === email);
-    let role = "owner";
-
-    if (!user) {
-      user = waiters.find(w => w.email === email);
-      if (user) role = "waiter";
+    const waiter = Object.values(waiters).find(w => w.loginId === loginId);
+    if (waiter && waiter.password === password) {
+      if (!waiter.enabled) {
+        throw new Error("Waiter account is disabled");
+      }
+      const authUser = {
+        uid: waiter.waiterId,
+        waiterId: waiter.waiterId,
+        hotelId: waiter.hotelId,
+        loginId: waiter.loginId,
+        waiterName: waiter.waiterName,
+        role: "waiter"
+      };
+      Storage.saveCurrentUser(authUser);
+      this.currentUser = authUser;
+      return authUser;
     }
 
-    if (!user) {
-      throw new Error("User not found");
-    }
-
-    if (user.password !== password) {
-      throw new Error("Wrong password");
-    }
-
-    const authUser = {
-      uid: user.hotelId,
-      hotelId: user.hotelId,
-      email: user.email,
-      role
-    };
-
-    Storage.saveCurrentUser(authUser);
-    this.currentUser = authUser;
-
-    return authUser;
+    throw new Error("Invalid login ID or password");
   }
 
   logout() {
@@ -52,124 +85,23 @@ class MockAuth {
     window.location.href = "index.html";
   }
 
-  /* ==================================
-     OWNER REGISTRATION (UPDATED)
-     - NO hotel creation here anymore
-     - Owner SELECTS hotel created by admin
-  ================================== */
-
-  registerOwner(data) {
-    const hotels = Storage.getHotels();
-
-    const hotel = hotels[data.hotelId];
-
-    if (!hotel) {
-      throw new Error("Invalid hotel selected");
-    }
-
-    // attach owner to existing hotel
-    hotel.ownerName = data.ownerName;
-    hotel.phone = data.phone;
-    hotel.email = data.email;
-    hotel.password = data.password;
-
-    Storage.saveHotels(hotels);
-
-    return data.hotelId;
+  isAdmin() {
+    return this.currentUser?.role === "admin";
   }
 
-  /* ==================================
-     WAITER REGISTRATION
-  ================================== */
+  isOwner() {
+    return this.currentUser?.role === "owner";
+  }
 
-  registerWaiter(data) {
-    const waiters = Storage.getWaiters();
-
-    const exists = waiters.find(w => w.email === data.email);
-
-    if (exists) {
-      throw new Error("Email already exists");
-    }
-
-    waiters.push({
-      hotelId: data.hotelId,
-      waiterName: data.waiterName,
-      email: data.email,
-      password: data.password,
-      createdAt: new Date().toISOString()
-    });
-
-    Storage.saveWaiters(waiters);
+  isWaiter() {
+    return this.currentUser?.role === "waiter";
   }
 }
 
-export const auth = new MockAuth();
+export const auth = new OrderDeskAuth();
 
 /* ==================================
-   TAB SWITCHING
-================================== */
-
-const tabs = document.querySelectorAll(".tab");
-
-tabs.forEach(tab => {
-  tab.addEventListener("click", () => {
-    tabs.forEach(t => t.classList.remove("active"));
-
-    document
-      .querySelectorAll(".auth-form")
-      .forEach(form => form.classList.remove("active"));
-
-    tab.classList.add("active");
-
-    document
-      .getElementById(tab.dataset.target)
-      ?.classList.add("active");
-  });
-});
-
-/* ==================================
-   OWNER / WAITER TOGGLE
-================================== */
-
-const ownerFields = document.getElementById("ownerFields");
-const waiterFields = document.getElementById("waiterFields");
-
-document.querySelectorAll('input[name="accountType"]').forEach(radio => {
-  radio.addEventListener("change", e => {
-    if (e.target.value === "owner") {
-      ownerFields.style.display = "block";
-      waiterFields.style.display = "none";
-    } else {
-      ownerFields.style.display = "none";
-      waiterFields.style.display = "block";
-    }
-  });
-});
-
-/* ==================================
-   LOAD HOTELS (FROM ADMIN)
-================================== */
-
-function loadHotels(selectId) {
-  const select = document.getElementById(selectId);
-  if (!select) return;
-
-  const hotels = Storage.getHotels();
-
-  select.innerHTML = `<option value="">Choose Hotel</option>`;
-
-  Object.values(hotels).forEach(hotel => {
-    const option = document.createElement("option");
-    option.value = hotel.hotelId;
-    option.textContent = hotel.hotelName;
-    select.appendChild(option);
-  });
-}
-
-document.addEventListener("DOMContentLoaded", loadHotels);
-
-/* ==================================
-   LOGIN
+   LOGIN FORM HANDLER
 ================================== */
 
 const loginForm = document.getElementById("loginForm");
@@ -178,77 +110,17 @@ loginForm?.addEventListener("submit", async e => {
   e.preventDefault();
 
   try {
-    const email = document.getElementById("loginEmail").value;
+    const loginId = document.getElementById("loginId").value.trim();
     const password = document.getElementById("loginPassword").value;
 
-    await auth.login(email, password);
+    await auth.login(loginId, password);
 
-    window.location.href = "dashboard.html";
-  } catch (error) {
-    alert(error.message);
-  }
-});
-
-/* ==================================
-   REGISTER
-================================== */
-
-const registerForm = document.getElementById("registerForm");
-
-registerForm?.addEventListener("submit", e => {
-  e.preventDefault();
-
-  try {
-    const type = document.querySelector(
-      'input[name="accountType"]:checked'
-    ).value;
-
-    const password = document.getElementById("regPassword").value;
-    const confirmPassword = document.getElementById("regPasswordConfirm").value;
-
-    if (password !== confirmPassword) {
-      throw new Error("Passwords do not match");
-    }
-
-    if (type === "owner") {
-      const hotelId = document.getElementById("waiterHotel").value;
-
-      if (!hotelId) {
-        throw new Error("Select a hotel");
-      }
-
-      auth.registerOwner({
-        hotelId: selectedHotelId,
-        ownerName,
-        phone,
-        email,
-        password
-      });
-
-      alert("Owner assigned to hotel successfully");
+    // Redirect based on role
+    if (auth.isAdmin()) {
+      window.location.href = "admin-dashboard.html";
     } else {
-      const hotelId = document.getElementById("waiterHotel").value;
-
-      if (!hotelId) {
-        throw new Error("Select a hotel");
-      }
-
-      auth.registerWaiter({
-        hotelId,
-        waiterName,
-        email,
-        password
-      });
-
-      alert("Waiter registered successfully");
+      window.location.href = "dashboard.html";
     }
-
-    registerForm.reset();
-
-    document
-      .querySelector('.tab[data-target="loginForm"]')
-      ?.click();
-
   } catch (error) {
     alert(error.message);
   }

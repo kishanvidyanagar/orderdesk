@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>History - OrderDesk</title>
+  <link rel="stylesheet" href="css/stylesheet.css" />
+</head>
+
+<body>
+
+  <div class="app-container">
+
+    <header class="app-header">
+
+      <div class="brand">
+        <h1>OrderDesk</h1>
+        <p id="hotelGreeting">Order & Activity History</p>
+      </div>
+
+      <button class="hamburger" id="hamburger">☰</button>
+
+      <div class="nav-actions" id="navMenu">
+        <a href="dashboard.html" class="button secondary">Dashboard</a>
+        <a href="waiter-management.html" class="button secondary">Waiters</a>
+        <a href="table-management.html" class="button secondary">Tables</a>
+        <a href="history.html" class="button secondary">History</a>
+        <a href="settings.html" class="button secondary">Settings</a>
+        <button id="logoutBtn" class="button secondary">Logout</button>
+      </div>
+
+    </header>
+
+    <main>
+
+      <div class="page-header">
+        <h2>Order & Activity History</h2>
+        <p>View completed orders and activity logs</p>
+      </div>
+
+      <!-- ORDER HISTORY -->
+      <section class="card">
+
+        <div class="page-header">
+          <h3>Completed Orders</h3>
+          <p id="orderCount">Total: 0</p>
+        </div>
+
+        <div id="orderHistory" class="menu-list"></div>
+
+      </section>
+
+      <!-- SUMMARY STATS -->
+      <section class="card">
+
+        <div class="page-header">
+          <h3>Today's Summary</h3>
+        </div>
+
+        <div class="stats-grid">
+          <article class="stat-card">
+            <span>Total Sales</span>
+            <strong id="totalSales">₹0</strong>
+          </article>
+          <article class="stat-card">
+            <span>Completed Orders</span>
+            <strong id="totalOrders">0</strong>
+          </article>
+          <article class="stat-card">
+            <span>Average Order Value</span>
+            <strong id="avgOrderValue">₹0</strong>
+          </article>
+        </div>
+
+      </section>
+
+    </main>
+
+  </div>
+
+  <div id="messageBox" class="message hidden"></div>
+
+  <script type="module" src="js/history.js"></script>
+  <script type="module" src="js/common.js"></script>
+
+</body>
+
+</html>

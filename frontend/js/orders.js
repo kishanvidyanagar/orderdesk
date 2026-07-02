@@ -6,10 +6,11 @@ import {
   getNextOrderNumber
 } from "./tables.js";
 import {
-  isWaiter
+  isWaiter, isOwner
 } from "./permissions.js";
 
 const user = requireLogin();
+const hotelId = user.hotelId;
 
 const tableSelect =
   document.getElementById("tableSelect");
@@ -55,8 +56,6 @@ let cart = [];
 
 init();
 
-init();
-
 if (isWaiter) {
   document
     .getElementById("addTableBtn")
@@ -69,12 +68,20 @@ if (isWaiter) {
   document
     .getElementById("salesNav")
     ?.remove();
+
+  document
+    .getElementById("waitersNav")
+    ?.remove();
+
+  document
+    .getElementById("settingsNav")
+    ?.remove();
 }
 
 function init() {
   populateTableDropdown(
     "tableSelect",
-    user.uid
+    hotelId
   );
 
   loadMenuItems();
@@ -112,18 +119,7 @@ function loadTableOrder(
   selectedTable =
     Number(tableNumber);
 
-  const orders =
-    Storage.getOrders();
-
-  const openOrder =
-    orders.find(
-      order =>
-        order.hotelId ===
-          user.uid &&
-        order.tableNumber ===
-          Number(tableNumber) &&
-        order.status === "OPEN"
-    );
+  const openOrder = Storage.getTableOrder(hotelId, Number(tableNumber));
 
   if (openOrder) {
     currentOrderId =
@@ -151,10 +147,12 @@ function loadTableOrder(
   } else {
     currentOrderId = null;
 
-    currentOrderNumberValue =
-      getNextOrderNumber(
-        user.uid
-      );
+    const allOrders = Storage.getHotelOrders(hotelId);
+    const nextNum = allOrders.length > 0
+      ? Math.max(...allOrders.map(o => o.orderNumber)) + 1
+      : 101;
+
+    currentOrderNumberValue = nextNum;
 
     cart = [];
 
@@ -174,12 +172,7 @@ function loadTableOrder(
 
 function loadMenuItems() {
   const items =
-    Storage.getMenuItems()
-      .filter(
-        item =>
-          item.hotelId ===
-          user.uid
-      );
+    Storage.getHotelMenuItems(hotelId);
 
   menuOrderList.innerHTML = "";
 
@@ -245,12 +238,14 @@ function addToCart(id) {
     return;
   }
 
-  const menuItem =
-    Storage.getMenuItems()
-      .find(
-        item =>
-          item.id === id
-      );
+  const menuItem = Object.values(Storage.getMenuItems()).find(
+    item => item.id === id
+  );
+
+  if (!menuItem) {
+    showMessage("Item not found", "error");
+    return;
+  }
 
   const existing =
     cart.find(
@@ -489,9 +484,6 @@ function saveOrder(
     return;
   }
 
-  const orders =
-    Storage.getOrders();
-
   const subtotal =
     cart.reduce(
       (sum, item) =>
@@ -512,61 +504,29 @@ function saveOrder(
     gst +
     service;
 
-  const order = {
-    id:
-      currentOrderId ||
-      "order_" +
-        Date.now(),
-
-    orderNumber:
-      currentOrderNumberValue,
-
-    hotelId:
-      user.uid,
-
-    tableNumber:
-      selectedTable,
-
-    items: cart,
-
-    subtotal,
-
-    gst,
-
-    service,
-
-    totalAmount:
-      total,
-
-    status:
-      completed
-        ? "COMPLETED"
-        : "OPEN",
-
-    orderDate:
-      new Date().toISOString()
-  };
-
-  const existingIndex =
-    orders.findIndex(
-      o =>
-        o.id ===
-        order.id
-    );
-
-  if (
-    existingIndex >= 0
-  ) {
-    orders[
-      existingIndex
-    ] = order;
+  if (currentOrderId) {
+    // Update existing order
+    Storage.updateOrder(currentOrderId, {
+      items: cart,
+      subtotal,
+      gst,
+      service,
+      totalAmount: total,
+      status: completed ? "COMPLETED" : "OPEN"
+    });
   } else {
-    orders.push(order);
+    // Create new order
+    const orderId = Storage.createOrder(hotelId, selectedTable);
+    Storage.updateOrder(orderId, {
+      items: cart,
+      subtotal,
+      gst,
+      service,
+      totalAmount: total,
+      status: completed ? "COMPLETED" : "OPEN"
+    });
+    currentOrderId = orderId;
   }
-
-  Storage.saveOrders(
-    orders
-  );
 
   if (completed) {
     showMessage(

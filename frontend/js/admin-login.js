@@ -1,11 +1,16 @@
 import { loginAdmin } from "./adminAuth.js";
 
 document.getElementById("adminLoginBtn").addEventListener("click", () => {
-  const email = document.getElementById("adminEmail").value;
+  const loginId = document.getElementById("adminLoginId").value.trim();
   const password = document.getElementById("adminPassword").value;
 
   try {
-    loginAdmin(email, password);
+    if (!loginId || !password) {
+      alert("Please enter both login ID and password");
+      return;
+    }
+
+    loginAdmin(loginId, password);
     window.location.href = "admin-dashboard.html";
   } catch (e) {
     alert(e.message);

@@ -1,60 +1,42 @@
 import { Storage } from "./storage.js";
+import { requireLogin } from "./config.js";
 
+const currentUser = requireLogin();
+const hotelId = currentUser.hotelId;
 const kitchenOrders =
   document.getElementById("kitchenOrders");
 
 function updateStatus(orderId, newStatus) {
-
-  const orders =
-    Storage.getOrders();
-
-  const order =
-    orders.find(
-      o => o.id === orderId
-    );
+  const order = Storage.getOrder(orderId);
 
   if (!order) return;
 
-  order.kitchenStatus =
-    newStatus;
-
-  Storage.saveOrders(
-    orders
-  );
+  Storage.updateOrder(orderId, {
+    kitchenStatus: newStatus
+  });
 
   renderOrders();
 }
 
 function renderOrders() {
-
-  const orders =
-    Storage.getOrders();
+  const openOrders =
+    Storage.getHotelOpenOrders(hotelId);
 
   kitchenOrders.innerHTML = "";
 
-  const openOrders =
-    orders.filter(
-      order =>
-        order.status === "OPEN"
-    );
-
   if (!openOrders.length) {
-
     kitchenOrders.innerHTML = `
       <div class="card">
         <p>No kitchen orders available.</p>
       </div>
     `;
-
     return;
   }
 
   openOrders.forEach(order => {
 
-    if (!order.kitchenStatus) {
-      order.kitchenStatus =
-        "OPEN";
-    }
+    const kitchenStatus =
+      order.kitchenStatus || "OPEN";
 
     const itemsHtml =
       order.items
@@ -87,7 +69,7 @@ function renderOrders() {
 
         <p>
           <strong>Status:</strong>
-          ${order.kitchenStatus}
+          ${kitchenStatus}
         </p>
 
         <div style="
@@ -115,8 +97,6 @@ function renderOrders() {
       </div>
     `;
   });
-
-  Storage.saveOrders(orders);
 }
 
 window.startCooking =

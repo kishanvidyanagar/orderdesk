@@ -5,10 +5,11 @@ import {
   formatDate
 } from "./utils.js";
 import {
-  isWaiter
+  isWaiter, isOwner
 } from "./permissions.js";
 
 const user = requireLogin();
+const hotelId = user.hotelId;
 
 const reportSales =
   document.getElementById(
@@ -25,45 +26,17 @@ const salesHistory =
     "salesHistory"
   );
 
-  if (isWaiter) {
-
+if (!isOwner) {
   window.location.href =
     "dashboard.html";
 }
 
 function loadSales() {
-  const orders =
-    Storage.getOrders()
-      .filter(
-        o =>
-          o.hotelId ===
-          user.uid
-      )
-      .sort(
-        (a, b) =>
-          new Date(
-            b.orderDate
-          ) -
-          new Date(
-            a.orderDate
-          )
-      );
-
-  const today =
-    new Date()
-      .toDateString();
-
-  const todayOrders =
-    orders.filter(
-      o =>
-        new Date(
-          o.orderDate
-        ).toDateString() ===
-        today
-    );
+  const completedOrders =
+    Storage.getHotelCompletedOrders(hotelId, new Date());
 
   const total =
-    todayOrders.reduce(
+    completedOrders.reduce(
       (sum, o) =>
         sum +
         o.totalAmount,
@@ -76,19 +49,19 @@ function loadSales() {
     );
 
   reportOrders.textContent =
-    todayOrders.length;
+    completedOrders.length;
 
   salesHistory.innerHTML =
     "";
 
-  orders.forEach(
+  completedOrders.forEach(
     order => {
       salesHistory.insertAdjacentHTML(
         "beforeend",
         `
         <div class="history-item">
           <h4>
-            Table ${order.tableNumber}
+            Order #${order.orderNumber} - Table ${order.tableNumber}
           </h4>
 
           <p>

@@ -7,7 +7,7 @@
 
   <title>Admin Login</title>
 
-  <link rel="stylesheet" href="../frontend/css/stylesheet.css" />
+  <link rel="stylesheet" href="css/stylesheet.css" />
 </head>
 
 <body>
@@ -25,16 +25,19 @@
 
       <div class="card auth-card">
 
-        <h2>Admin Login</h2>
+        <div class="page-header">
+          <h2>Admin Panel</h2>
+          <p>OrderDesk Control System</p>
+        </div>
 
         <div class="field-group">
-          <label>Email</label>
-          <input id="adminEmail" type="email" placeholder="admin@email.com">
+          <label>Login ID</label>
+          <input id="adminLoginId" type="text" placeholder="Enter admin login ID" required>
         </div>
 
         <div class="field-group">
           <label>Password</label>
-          <input id="adminPassword" type="password" placeholder="******">
+          <input id="adminPassword" type="password" placeholder="Enter password" required>
         </div>
 
         <button class="button primary" id="adminLoginBtn">

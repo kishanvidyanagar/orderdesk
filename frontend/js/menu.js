@@ -2,10 +2,11 @@ import { Storage } from "./storage.js";
 import { requireLogin } from "./config.js";
 import { showMessage } from "./utils.js";
 import {
-  isWaiter
+  isWaiter, isOwner
 } from "./permissions.js";
 
 const user = requireLogin();
+const hotelId = user.hotelId;
 
 const menuForm =
   document.getElementById("menuForm");
@@ -15,16 +16,7 @@ const menuItemsList =
 
 let editingId = null;
 
-if (isWaiter) {
-
-  document
-    .getElementById("menuNav")
-    ?.remove();
-
-  document
-    .getElementById("salesNav")
-    ?.remove();
-
+if (!isOwner) {
   alert(
     "Only hotel owners can manage menu items."
   );
@@ -35,10 +27,7 @@ if (isWaiter) {
 
 function loadMenu() {
   const items =
-    Storage.getMenuItems()
-      .filter(
-        m => m.hotelId === user.uid
-      );
+    Storage.getHotelMenuItems(hotelId);
 
   menuItemsList.innerHTML = "";
 
@@ -74,38 +63,25 @@ function loadMenu() {
 }
 
 window.editItem = id => {
-  const item =
-    Storage.getMenuItems()
-      .find(m => m.id === id);
+  const items = Storage.getHotelMenuItems(hotelId);
+  const item = items.find(m => m.id === id);
 
   editingId = id;
 
-  itemName.value =
+  document.getElementById("itemName").value =
     item.itemName;
 
-  itemPrice.value =
+  document.getElementById("itemPrice").value =
     item.price;
 
-  itemCategory.value =
+  document.getElementById("itemCategory").value =
     item.category;
 };
 
 window.deleteItem = id => {
-  const items =
-    Storage.getMenuItems()
-      .filter(
-        i => i.id !== id
-      );
-
-  Storage.saveMenuItems(
-    items
-  );
-
+  Storage.deleteMenuItem(id);
   loadMenu();
-
-  showMessage(
-    "Item deleted"
-  );
+  showMessage("Item deleted");
 };
 
 menuForm.addEventListener(
@@ -113,53 +89,24 @@ menuForm.addEventListener(
   e => {
     e.preventDefault();
 
-    const items =
-      Storage.getMenuItems();
-
-    const data = {
-      id:
-        editingId ||
-        "menu_" +
-          Date.now(),
-      hotelId:
-        user.uid,
-      itemName:
-        itemName.value,
-      price:
-        Number(
-          itemPrice.value
-        ),
-      category:
-        itemCategory.value
-    };
+    const itemName = document.getElementById("itemName").value;
+    const itemPrice = Number(document.getElementById("itemPrice").value);
+    const itemCategory = document.getElementById("itemCategory").value;
 
     if (editingId) {
-      const idx =
-        items.findIndex(
-          i =>
-            i.id ===
-            editingId
-        );
-
-      items[idx] =
-        data;
+      Storage.updateMenuItem(editingId, {
+        itemName,
+        price: itemPrice,
+        category: itemCategory
+      });
     } else {
-      items.push(data);
+      Storage.addMenuItem(hotelId, itemName, itemPrice, itemCategory);
     }
 
-    Storage.saveMenuItems(
-      items
-    );
-
     editingId = null;
-
     menuForm.reset();
-
     loadMenu();
-
-    showMessage(
-      "Saved"
-    );
+    showMessage("Menu item saved");
   }
 );
 

@@ -3,81 +3,45 @@
 import { Storage } from "./storage.js";
 
 export function getHotelTableCount(hotelId) {
-  const configs = Storage.getTableConfigs();
-
-  return configs[hotelId] || 10;
+  return Storage.getTableCount(hotelId);
 }
 
-export function setHotelTableCount(
-  hotelId,
-  count
-) {
-  const configs = Storage.getTableConfigs();
-
-  configs[hotelId] = count;
-
-  Storage.saveTableConfigs(configs);
+export function setHotelTableCount(hotelId, count) {
+  Storage.setTableCount(hotelId, count);
 }
 
 export function addTableForHotel(hotelId) {
-  const count =
-    getHotelTableCount(hotelId) + 1;
-
-  setHotelTableCount(hotelId, count);
-
+  const count = Storage.getTableCount(hotelId) + 1;
+  Storage.setTableCount(hotelId, count);
   return count;
 }
 
 export function removeLastTable(hotelId) {
-  const count =
-    getHotelTableCount(hotelId);
-
+  const count = Storage.getTableCount(hotelId);
   if (count <= 1) return;
-
-  setHotelTableCount(
-    hotelId,
-    count - 1
-  );
+  Storage.setTableCount(hotelId, count - 1);
 }
 
-export function populateTableDropdown(
-  selectId,
-  hotelId
-) {
-  const select =
-    document.getElementById(selectId);
-
+export function populateTableDropdown(selectId, hotelId) {
+  const select = document.getElementById(selectId);
   if (!select) return;
 
   select.innerHTML = "";
 
-  const total =
-    getHotelTableCount(hotelId);
+  const total = Storage.getTableCount(hotelId);
 
   for (let i = 1; i <= total; i++) {
-    const option =
-      document.createElement("option");
-
+    const option = document.createElement("option");
     option.value = i;
     option.textContent = `Table ${i}`;
-
     select.appendChild(option);
   }
 }
 
-export function getNextOrderNumber(
-  hotelId
-) {
-  const orders = Storage.getOrders()
-    .filter(o => o.hotelId === hotelId);
-
+export function getNextOrderNumber(hotelId) {
+  const orders = Storage.getHotelOrders(hotelId);
   if (!orders.length) return 101;
 
-  const max = Math.max(
-    ...orders.map(
-      o => o.orderNumber || 100
-    )
-  );
-
+  const max = Math.max(...orders.map(o => o.orderNumber || 100));
   return max + 1;
 }

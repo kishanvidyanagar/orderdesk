@@ -1,101 +1,78 @@
 import { Storage } from "./storage.js";
 import { requireLogin } from "./config.js";
 import { formatCurrency, formatDate, showMessage } from "./utils.js";
-import {
-  getHotelTableCount,
-  addTableForHotel,
-  removeLastTable
-} from "./tables.js";
-import {
-  isWaiter
-} from "./permissions.js";
+import { isWaiter, isOwner } from "./permissions.js";
 
-const user = requireLogin();
+const currentUser = requireLogin();
+const hotelId = currentUser.hotelId;
 
 const todaySales = document.getElementById("todaySales");
 const todayOrders = document.getElementById("todayOrders");
 const menuCount = document.getElementById("menuCount");
 const hotelGreeting = document.getElementById("hotelGreeting");
 
-const openOrdersList =
-  document.getElementById("openOrdersList");
+const openOrdersList = document.getElementById("openOrdersList");
+const tableStatusGrid = document.getElementById("tableStatusGrid");
+const addTableBtn = document.getElementById("addTableBtn");
 
-const tableStatusGrid =
-  document.getElementById("tableStatusGrid");
-
-const addTableBtn =
-  document.getElementById("addTableBtn");
+/* =========================
+   HIDE OWNER-ONLY FEATURES FOR WAITERS
+========================= */
 
 if (isWaiter) {
-  document
-    .getElementById("menuNav")
-    ?.remove();
-
-  document
-    .getElementById("salesNav")
-    ?.remove();
-
-  document
-    .getElementById("addTableBtn")
-    ?.remove();
+  document.getElementById("menuNav")?.remove();
+  document.getElementById("salesNav")?.remove();
+  document.getElementById("waitersNav")?.remove();
+  document.getElementById("settingsNav")?.remove();
+  if (addTableBtn) addTableBtn.remove();
 }
 
-function loadDashboardMetrics() {
-  const orders = Storage.getOrders()
-    .filter(o => o.hotelId === user.uid);
+/* =========================
+   LOAD DASHBOARD METRICS
+========================= */
 
-  const menuItems = Storage.getMenuItems()
-    .filter(m => m.hotelId === user.uid);
+function loadDashboardMetrics() {
+  const allOrders = Storage.getHotelOrders(hotelId);
+  const menuItems = Storage.getHotelMenuItems(hotelId);
 
   const today = new Date().toDateString();
 
-  const todayData = orders.filter(
-    o =>
-      new Date(o.orderDate)
-        .toDateString() === today
+  const todayOrders_ = allOrders.filter(
+    o => new Date(o.orderDate).toDateString() === today && o.status === "COMPLETED"
   );
 
-  const total = todayData.reduce(
-    (sum, o) => sum + o.totalAmount,
-    0
-  );
+  const total = todayOrders_.reduce((sum, o) => sum + o.totalAmount, 0);
 
-  todaySales.textContent =
-    formatCurrency(total);
-
-  todayOrders.textContent =
-    todayData.length;
-
-  menuCount.textContent =
-    menuItems.length;
+  todaySales.textContent = formatCurrency(total);
+  todayOrders.textContent = todayOrders_.length;
+  menuCount.textContent = menuItems.length;
 }
+
+/* =========================
+   LOAD GREETING
+========================= */
 
 function loadGreeting() {
-  const hotels =
-    Storage.getHotels();
-
-  const hotel =
-    hotels[user.uid];
-
-  hotelGreeting.textContent =
-    `Welcome, ${hotel.hotelName}`;
+  const userName = isOwner ? currentUser.ownerName : currentUser.waiterName;
+  hotelGreeting.textContent = `Welcome, ${userName}`;
 }
 
-function loadOpenOrders() {
+/* =========================
+   LOAD OPEN ORDERS
+========================= */
 
-  const orders = Storage.getOrders()
-    .filter(
-      o =>
-        o.hotelId === user.uid &&
-        o.status === "OPEN"
-    );
+function loadOpenOrders() {
+  const orders = Storage.getHotelOpenOrders(hotelId);
 
   openOrdersList.innerHTML = "";
 
-  orders.forEach(order => {
+  if (orders.length === 0) {
+    openOrdersList.innerHTML = "<p style='color: #999; padding: 20px; text-align: center;'>No open orders</p>";
+    return;
+  }
 
-    const kitchenStatus =
-      order.kitchenStatus || "OPEN";
+  orders.forEach(order => {
+    const kitchenStatus = order.kitchenStatus || "OPEN";
 
     openOrdersList.insertAdjacentHTML(
       "beforeend",
@@ -112,7 +89,7 @@ function loadOpenOrders() {
           <div>
 
             <h4>
-              Table ${order.tableNumber}
+              Order #${order.orderNumber} - Table ${order.tableNumber}
             </h4>
 
             <p>
@@ -127,8 +104,7 @@ function loadOpenOrders() {
               margin-top:8px;
               font-weight:bold;
             ">
-              Kitchen Status:
-              ${kitchenStatus}
+              Kitchen: ${kitchenStatus}
             </p>
 
           </div>
@@ -145,7 +121,7 @@ function loadOpenOrders() {
               padding:6px 10px;
             "
           >
-            Continue Order
+            Continue
           </button>
 
         </div>
@@ -155,57 +131,41 @@ function loadOpenOrders() {
     );
   });
 }
+
+/* =========================
+   LOAD TABLE STATUS
+========================= */
+
 function loadTableStatus() {
   tableStatusGrid.innerHTML = "";
 
-  const tableCount =
-    getHotelTableCount(user.uid);
+  const tableCount = Storage.getTableCount(hotelId);
+  const openOrders = Storage.getHotelOpenOrders(hotelId);
 
-  const orders =
-    Storage.getOrders();
-
-  const canDelete = !isWaiter;
-
-  for (
-    let i = 1;
-    i <= tableCount;
-    i++
-  ) {
-    const openOrder =
-      orders.find(
-        o =>
-          o.hotelId === user.uid &&
-          o.tableNumber == i &&
-          o.status === "OPEN"
-      );
+  for (let i = 1; i <= tableCount; i++) {
+    const openOrder = openOrders.find(o => o.tableNumber === i);
 
     tableStatusGrid.insertAdjacentHTML(
       "beforeend",
       `
       <div class="table-card-wrapper">
-        ${canDelete ? `
-<button
-  class="delete-table-btn"
-  onclick="event.stopPropagation();window.deleteTable(${i})"
-  title="Delete table"
->
-  ×
-</button>
-` : ""}
+        ${isOwner ? `
+          <button
+            class="delete-table-btn"
+            onclick="event.stopPropagation();window.deleteTable(${i})"
+            title="Delete table"
+          >
+            ×
+          </button>
+        ` : ""}
         <button
-          class="table-status-card-item ${openOrder
-        ? "occupied"
-        : "available"
-      }"
+          class="table-status-card-item ${openOrder ? "occupied" : "available"}"
           onclick="window.location.href='orders.html?table=${i}'"
         >
           <div>
             <h4>Table ${i}</h4>
             <p>
-              ${openOrder
-        ? "Occupied"
-        : "Available"
-      }
+              ${openOrder ? "Occupied" : "Available"}
             </p>
           </div>
         </button>
@@ -215,31 +175,50 @@ function loadTableStatus() {
   }
 }
 
-if (addTableBtn) {
-  addTableBtn.addEventListener(
-    "click",
-    () => {
-      addTableForHotel(user.uid);
+/* =========================
+   ADD TABLE
+========================= */
 
-      loadTableStatus();
-
-      showMessage(
-        "Table added"
-      );
-    }
-  );
+if (addTableBtn && isOwner) {
+  addTableBtn.addEventListener("click", () => {
+    const currentCount = Storage.getTableCount(hotelId);
+    Storage.setTableCount(hotelId, currentCount + 1);
+    loadTableStatus();
+    showMessage("Table added");
+  });
 }
+
+/* =========================
+   DELETE TABLE
+========================= */
+
+window.deleteTable = (tableNumber) => {
+  if (confirm(`Delete Table ${tableNumber}?`)) {
+    const currentCount = Storage.getTableCount(hotelId);
+    if (currentCount > 1) {
+      Storage.setTableCount(hotelId, currentCount - 1);
+      loadTableStatus();
+      showMessage("Table deleted");
+    } else {
+      showMessage("Cannot delete the last table", "error");
+    }
+  }
+};
+
+/* =========================
+   LOGOUT
+========================= */
+
+document.getElementById("logoutBtn")?.addEventListener("click", () => {
+  Storage.clearCurrentUser();
+  window.location.href = "index.html";
+});
+
+/* =========================
+   INIT
+========================= */
 
 loadGreeting();
 loadDashboardMetrics();
 loadOpenOrders();
 loadTableStatus();
-
-// Delete table function exposed to window
-window.deleteTable = (tableNumber) => {
-  if (confirm(`Are you sure you want to delete Table ${tableNumber}?`)) {
-    removeLastTable(user.uid);
-    loadTableStatus();
-    showMessage(`Table ${tableNumber} deleted`);
-  }
-};

@@ -321,7 +321,8 @@ select option {
 }
 
 .auth-form {
-  display: none;
+  display: grid;
+  gap: 16px;
 }
 
 .auth-form.active {

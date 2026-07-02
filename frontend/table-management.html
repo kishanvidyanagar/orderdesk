@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Table Management - OrderDesk</title>
+  <link rel="stylesheet" href="css/stylesheet.css" />
+</head>
+
+<body>
+
+  <div class="app-container">
+
+    <header class="app-header">
+
+      <div class="brand">
+        <h1>OrderDesk</h1>
+        <p id="hotelGreeting">Table Management</p>
+      </div>
+
+      <button class="hamburger" id="hamburger">☰</button>
+
+      <div class="nav-actions" id="navMenu">
+        <a href="dashboard.html" class="button secondary">Dashboard</a>
+        <a href="waiter-management.html" class="button secondary">Waiters</a>
+        <a href="table-management.html" class="button secondary">Tables</a>
+        <a href="history.html" class="button secondary">History</a>
+        <a href="settings.html" class="button secondary">Settings</a>
+        <button id="logoutBtn" class="button secondary">Logout</button>
+      </div>
+
+    </header>
+
+    <main>
+
+      <div class="page-header">
+        <h2>Manage Tables</h2>
+        <p>Configure the number of tables and view table status</p>
+      </div>
+
+      <!-- CONFIGURE TABLES -->
+      <section class="card">
+
+        <div class="page-header">
+          <h3>Table Configuration</h3>
+        </div>
+
+        <form id="tableConfigForm">
+
+          <div class="field-row">
+            <div class="field-group">
+              <label>Number of Tables</label>
+              <input id="tableCount" type="number" min="1" max="50" placeholder="Enter number of tables" required />
+            </div>
+            <button class="button primary" type="submit">
+              Save Configuration
+            </button>
+          </div>
+
+        </form>
+
+      </section>
+
+      <!-- TABLE GRID -->
+      <section class="card">
+
+        <div class="page-header">
+          <h3>Table Status</h3>
+        </div>
+
+        <div id="tableGrid" class="table-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 10px;"></div>
+
+      </section>
+
+    </main>
+
+  </div>
+
+  <div id="messageBox" class="message hidden"></div>
+
+  <script type="module" src="js/table-management.js"></script>
+  <script type="module" src="js/common.js"></script>
+
+</body>
+
+</html>

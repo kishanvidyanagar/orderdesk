@@ -1,13 +1,10 @@
-// config.js
-
-import { auth } from "./auth.js";
+import { Storage } from "./storage.js";
 
 export function requireLogin() {
-  const user = auth.getCurrentUser();
+  const user = Storage.getCurrentUser();
 
   if (!user) {
-    window.location.href =
-      "index.html";
+    window.location.href = "index.html";
     return null;
   }
 
@@ -15,5 +12,6 @@ export function requireLogin() {
 }
 
 export function logout() {
-  auth.logout();
+  Storage.clearCurrentUser();
+  window.location.href = "index.html";
 }
