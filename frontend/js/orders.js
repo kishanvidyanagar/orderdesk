@@ -11,6 +11,8 @@ import {
 
 const user = requireLogin();
 const hotelId = user.hotelId;
+const currentWaiterId = user.role === "waiter" ? user.waiterId : null;
+const currentWaiterName = user.role === "waiter" ? user.waiterName : null;
 
 const tableSelect =
   document.getElementById("tableSelect");
@@ -512,7 +514,9 @@ function saveOrder(
       gst,
       service,
       totalAmount: total,
-      status: completed ? "COMPLETED" : "OPEN"
+      status: completed ? "COMPLETED" : "OPEN",
+      waiterId: currentWaiterId,
+      waiterName: currentWaiterName
     });
   } else {
     // Create new order
@@ -523,7 +527,9 @@ function saveOrder(
       gst,
       service,
       totalAmount: total,
-      status: completed ? "COMPLETED" : "OPEN"
+      status: completed ? "COMPLETED" : "OPEN",
+      waiterId: currentWaiterId,
+      waiterName: currentWaiterName
     });
     currentOrderId = orderId;
   }

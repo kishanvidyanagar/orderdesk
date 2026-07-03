@@ -330,7 +330,9 @@ export const Storage = {
       service: 0,
       totalAmount: 0,
       status: "OPEN",
-      kitchenStatus: "OPEN",
+      kitchenStatus: "PENDING",
+      waiterId: null,
+      waiterName: null,
       orderDate: new Date().toISOString()
     };
     

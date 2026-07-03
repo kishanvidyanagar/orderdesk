@@ -36,7 +36,14 @@ function renderOrders() {
   openOrders.forEach(order => {
 
     const kitchenStatus =
-      order.kitchenStatus || "OPEN";
+      order.kitchenStatus || "PENDING";
+
+    const statusLabel =
+      kitchenStatus === "PENDING" ? "Pending" :
+      kitchenStatus === "PREPARING" ? "Preparing" :
+      kitchenStatus === "READY" ? "Ready" :
+      kitchenStatus === "SERVED" ? "Served" :
+      kitchenStatus;
 
     const itemsHtml =
       order.items
@@ -63,35 +70,51 @@ function renderOrders() {
           Order #${order.orderNumber}
         </p>
 
+        <p>
+          Waiter: ${order.waiterName || "Unassigned"}
+        </p>
+
         <ul>
           ${itemsHtml}
         </ul>
 
         <p>
           <strong>Status:</strong>
-          ${kitchenStatus}
+          ${statusLabel}
         </p>
 
         <div style="
           display:flex;
           gap:10px;
           margin-top:15px;
+          flex-wrap:wrap;
         ">
+          ${kitchenStatus === "PENDING" ? `
+            <button
+              class="button secondary"
+              onclick="startCooking('${order.id}')"
+            >
+              Start Cooking
+            </button>
+          ` : ""}
 
-          <button
-            class="button secondary"
-            onclick="startCooking('${order.id}')"
-          >
-            Start Cooking
-          </button>
+          ${kitchenStatus === "PREPARING" ? `
+            <button
+              class="button primary"
+              onclick="markReady('${order.id}')"
+            >
+              Mark Ready
+            </button>
+          ` : ""}
 
-          <button
-            class="button primary"
-            onclick="markReady('${order.id}')"
-          >
-            Ready
-          </button>
-
+          ${kitchenStatus === "READY" ? `
+            <button
+              class="button secondary"
+              onclick="markServed('${order.id}')"
+            >
+              Mark Served
+            </button>
+          ` : ""}
         </div>
 
       </div>
@@ -112,6 +135,14 @@ window.markReady =
     updateStatus(
       orderId,
       "READY"
+    );
+  };
+
+window.markServed =
+  function(orderId) {
+    updateStatus(
+      orderId,
+      "SERVED"
     );
   };
 

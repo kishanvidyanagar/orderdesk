@@ -64,6 +64,37 @@
 
       </div>
 
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h3>Report Filters</h3>
+            <p class="small-text">Filter by date range and waiter</p>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label for="startDate">Start Date</label>
+          <input type="date" id="startDate" />
+        </div>
+
+        <div class="field-group">
+          <label for="endDate">End Date</label>
+          <input type="date" id="endDate" />
+        </div>
+
+        <div class="field-group">
+          <label for="waiterFilter">Waiter</label>
+          <select id="waiterFilter">
+            <option value="all">All Waiters</option>
+          </select>
+        </div>
+
+        <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top:12px;">
+          <button id="applyFiltersBtn" class="button secondary">Apply Filters</button>
+          <button id="resetFiltersBtn" class="button secondary">Reset Filters</button>
+        </div>
+      </div>
+
       <!-- STATS -->
 
       <div class="stats-grid">
@@ -92,6 +123,18 @@
 
         </article>
 
+        <article class="stat-card">
+
+          <span>
+            Top Waiter
+          </span>
+
+          <strong id="topWaiter">
+            N/A
+          </strong>
+
+        </article>
+
         <article class="stat-card full-width">
 
           <span>
@@ -99,6 +142,17 @@
           </span>
 
           <strong id="lifetimeRevenue">
+            ₹0
+          </strong>
+
+        </article>
+        <article class="stat-card full-width">
+
+          <span>
+            Top Waiter Sales
+          </span>
+
+          <strong id="topWaiterSales">
             ₹0
           </strong>
 

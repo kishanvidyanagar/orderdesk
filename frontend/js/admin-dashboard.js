@@ -46,6 +46,15 @@ hotelForm?.addEventListener("submit", (e) => {
 
   const input = document.getElementById("hotelName");
   const hotelName = input.value.trim();
+  const gstEnabled = document.getElementById("hotelGstEnabled").checked;
+  const cookEnabled = document.getElementById("hotelCookEnabled").checked;
+  const addBtn = document.getElementById("addHotelBtn");
+
+  // basic validation
+  if (hotelName.length < 2) {
+    showMessage("Hotel name must be at least 2 characters", "error");
+    return;
+  }
 
   if (!hotelName) {
     showMessage("Enter hotel name", "error");
@@ -54,8 +63,9 @@ hotelForm?.addEventListener("submit", (e) => {
 
   const hotels = Storage.getHotels();
 
+  const normalize = name => name.replace(/\s+/g, ' ').trim().toLowerCase();
   const exists = Object.values(hotels).some(
-    h => h.hotelName.toLowerCase() === hotelName.toLowerCase()
+    h => normalize(h.hotelName) === normalize(hotelName)
   );
 
   if (exists) {
@@ -63,11 +73,18 @@ hotelForm?.addEventListener("submit", (e) => {
     return;
   }
 
-  Storage.createHotel(hotelName, false, false);
-  input.value = "";
-  showMessage("Hotel created successfully", "success");
-  loadHotels();
-  populateHotelDropdowns();
+  try {
+    if (addBtn) addBtn.disabled = true;
+    Storage.createHotel(hotelName, gstEnabled, cookEnabled);
+    input.value = "";
+    document.getElementById("hotelGstEnabled").checked = false;
+    document.getElementById("hotelCookEnabled").checked = false;
+    showMessage("Hotel created successfully", "success");
+    loadHotels();
+    populateHotelDropdowns();
+  } finally {
+    if (addBtn) addBtn.disabled = false;
+  }
 });
 
 /* =========================
@@ -84,43 +101,54 @@ function loadHotels() {
     const ownerCount = Storage.getOwnersByHotel(hotel.hotelId).length;
     
     const card = document.createElement("div");
-    card.className = "menu-item";
-    card.style.flexDirection = "column";
-    card.style.alignItems = "flex-start";
-    card.style.gap = "12px";
+    card.className = "admin-item";
 
     card.innerHTML = `
-      <div style="width: 100%;">
-        <strong>${hotel.hotelName}</strong>
-        <div class="small-text">${hotel.hotelId}</div>
-        <div class="small-text" style="margin-top: 4px;">Owners: ${ownerCount}</div>
+      <div class="card-row">
+        <div>
+          <strong style="font-size:1.1rem;">${hotel.hotelName}</strong>
+          <div class="small-text" style="margin-top: 4px;">${hotel.hotelId}</div>
+          <div class="small-text" style="margin-top: 6px;">Owners: ${ownerCount}</div>
+        </div>
+
+        <div class="feature-pill-group">
+          <span class="feature-pill ${hotel.gstEnabled ? 'enabled' : 'disabled'}">
+            GST ${hotel.gstEnabled ? 'On' : 'Off'}
+          </span>
+          <span class="feature-pill ${hotel.cookEnabled ? 'enabled' : 'disabled'}">
+            Kitchen ${hotel.cookEnabled ? 'On' : 'Off'}
+          </span>
+        </div>
       </div>
 
-      <div style="display:flex; gap:20px; align-items:center;">
-        <label>
-          <input type="checkbox"
-            data-id="${hotel.hotelId}"
-            data-type="gst"
-            ${hotel.gstEnabled ? "checked" : ""}>
-          GST
-        </label>
+      <div class="card-row">
+        <div style="display:flex; gap:18px; align-items:center; flex-wrap:wrap;">
+          <label style="display:flex; align-items:center; gap:8px; font-weight:600;">
+            <input type="checkbox"
+              data-id="${hotel.hotelId}"
+              data-type="gst"
+              ${hotel.gstEnabled ? "checked" : ""}>
+            GST
+          </label>
 
-        <label>
-          <input type="checkbox"
-            data-id="${hotel.hotelId}"
-            data-type="cook"
-            ${hotel.cookEnabled ? "checked" : ""}>
-          Cook
-        </label>
+          <label style="display:flex; align-items:center; gap:8px; font-weight:600;">
+            <input type="checkbox"
+              data-id="${hotel.hotelId}"
+              data-type="cook"
+              ${hotel.cookEnabled ? "checked" : ""}>
+            Kitchen
+          </label>
+        </div>
+
+        <div class="admin-actions">
+          <button class="button secondary" onclick="editHotel('${hotel.hotelId}')">
+            Edit
+          </button>
+          <button class="button danger" onclick="deleteHotel('${hotel.hotelId}')">
+            Delete
+          </button>
+        </div>
       </div>
-
-      <button class="button secondary" onclick="editHotel('${hotel.hotelId}')">
-        Edit
-      </button>
-
-      <button class="button danger" onclick="deleteHotel('${hotel.hotelId}')">
-        Delete
-      </button>
     `;
 
     list.appendChild(card);
@@ -135,17 +163,18 @@ function attachHotelToggleEvents() {
       cb.addEventListener("change", (e) => {
         const hotelId = e.target.dataset.id;
         const type = e.target.dataset.type;
+        // Persist change via Storage.updateHotel and re-render list
+        const updates = {};
+        if (type === "gst") updates.gstEnabled = e.target.checked;
+        if (type === "cook") updates.cookEnabled = e.target.checked;
 
-        const hotels = Storage.getHotels();
-        const hotel = hotels[hotelId];
-
-        if (!hotel) return;
-
-        if (type === "gst") hotel.gstEnabled = e.target.checked;
-        if (type === "cook") hotel.cookEnabled = e.target.checked;
-
-        Storage.saveHotels(hotels);
-        showMessage("Hotel updated", "success");
+        if (Object.keys(updates).length > 0) {
+          Storage.updateHotel(hotelId, updates);
+          showMessage("Hotel updated", "success");
+          // Re-render to update feature pills and controls
+          loadHotels();
+          populateHotelDropdowns();
+        }
       });
     });
 }
@@ -158,6 +187,7 @@ window.editHotel = function(hotelId) {
     Storage.updateHotel(hotelId, { hotelName: newName.trim() });
     showMessage("Hotel updated", "success");
     loadHotels();
+    populateHotelDropdowns();
   }
 };
 
@@ -271,10 +301,19 @@ function loadOwners() {
 
 window.editOwner = function(ownerId) {
   const owner = Storage.getOwner(ownerId);
-  const newName = prompt("Enter owner name:", owner.ownerName);
-  
-  if (newName && newName.trim()) {
-    Storage.updateOwner(ownerId, { ownerName: newName.trim() });
+  const action = prompt("Type new name to update owner name, or type 'reset' to reset password:", owner.ownerName);
+
+  if (!action) return;
+
+  if (action.trim().toLowerCase() === 'reset') {
+    // Delegate to reset flow which explicitly updates password
+    window.resetOwnerPassword(ownerId);
+    return;
+  }
+
+  const newName = action.trim();
+  if (newName) {
+    Storage.updateOwner(ownerId, { ownerName: newName });
     showMessage("Owner updated", "success");
     loadOwners();
   }

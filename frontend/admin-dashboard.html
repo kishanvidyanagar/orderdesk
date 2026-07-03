@@ -23,7 +23,7 @@
         <p>Manage hotels & features</p>
       </div>
 
-      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+      <div class="admin-header-actions">
         <button class="button secondary" id="changeAdminPasswordBtn">
           Change Password
         </button>
@@ -34,9 +34,10 @@
 
     </header>
 
+    <div class="admin-grid">
 
-    <!-- HOTELS SECTION -->
-    <section class="card">
+      <!-- HOTELS SECTION -->
+      <section class="card">
 
       <div class="page-header">
         <h2>Hotels</h2>
@@ -50,7 +51,16 @@
           <input id="hotelName" type="text" placeholder="Enter hotel name" required />
         </div>
 
-        <button class="button primary" type="submit">
+        <div class="form-switches">
+          <label>
+            <input id="hotelGstEnabled" type="checkbox" /> GST Enabled
+          </label>
+          <label>
+            <input id="hotelCookEnabled" type="checkbox" /> Kitchen Enabled
+          </label>
+        </div>
+
+        <button id="addHotelBtn" class="button primary" type="submit">
           Add Hotel
         </button>
 
@@ -60,8 +70,8 @@
 
     </section>
 
-    <!-- OWNERS SECTION -->
-    <section class="card">
+      <!-- OWNERS SECTION -->
+      <section class="card">
 
       <div class="page-header">
         <h2>Owners</h2>
@@ -105,7 +115,9 @@
 
       <div id="ownerList" class="menu-list"></div>
 
-    </section>
+      </section>
+
+    </div>
 
   </div>
 

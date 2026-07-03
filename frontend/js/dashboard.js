@@ -25,6 +25,7 @@ if (isWaiter) {
   document.getElementById("waitersNav")?.remove();
   document.getElementById("settingsNav")?.remove();
   if (addTableBtn) addTableBtn.remove();
+  todaySales.closest(".stat-card")?.remove();
 }
 
 /* =========================
