@@ -1,7 +1,7 @@
 import { Storage } from "./storage.js";
 import { requireLogin } from "./config.js";
 import { formatCurrency, formatDate, showMessage } from "./utils.js";
-import { isWaiter, isOwner } from "./permissions.js";
+import { isWaiter, isOwner, isCook } from "./permissions.js";
 
 const currentUser = requireLogin();
 const hotelId = currentUser.hotelId;
@@ -19,7 +19,7 @@ const addTableBtn = document.getElementById("addTableBtn");
    HIDE OWNER-ONLY FEATURES FOR WAITERS
 ========================= */
 
-if (isWaiter) {
+if (isWaiter || isCook) {
   document.getElementById("menuNav")?.remove();
   document.getElementById("salesNav")?.remove();
   document.getElementById("waitersNav")?.remove();
@@ -64,6 +64,7 @@ function loadGreeting() {
 
 function loadOpenOrders() {
   const orders = Storage.getHotelOpenOrders(hotelId);
+  const kitchenEnabled = Boolean(Storage.getHotel(hotelId)?.cookEnabled);
 
   openOrdersList.innerHTML = "";
 
@@ -101,12 +102,14 @@ function loadOpenOrders() {
               ${formatCurrency(order.totalAmount)}
             </strong>
 
-            <p style="
-              margin-top:8px;
-              font-weight:bold;
-            ">
-              Kitchen: ${kitchenStatus}
-            </p>
+            ${kitchenEnabled ? `
+              <p style="
+                margin-top:8px;
+                font-weight:bold;
+              ">
+                Kitchen: ${kitchenStatus}
+              </p>
+            ` : ""}
 
           </div>
 

@@ -16,7 +16,7 @@ const hotelId = currentUser.hotelId;
    UPDATE GREETING
 ========================= */
 
-document.getElementById("hotelGreeting").textContent = `${currentUser.hotelName} - History`;
+document.getElementById("hotelGreeting").textContent = `History`;
 
 /* =========================
    LOAD ORDER HISTORY

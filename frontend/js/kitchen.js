@@ -5,6 +5,7 @@ const currentUser = requireLogin();
 const hotelId = currentUser.hotelId;
 const kitchenOrders =
   document.getElementById("kitchenOrders");
+const kitchenEnabled = Boolean(Storage.getHotel(hotelId)?.cookEnabled);
 
 function updateStatus(orderId, newStatus) {
   const order = Storage.getOrder(orderId);
@@ -19,6 +20,18 @@ function updateStatus(orderId, newStatus) {
 }
 
 function renderOrders() {
+  if (!kitchenEnabled) {
+    kitchenOrders.innerHTML = `
+      <div class="card">
+        <p>Kitchen module is disabled.</p>
+      </div>
+    `;
+    setTimeout(() => {
+      window.location.href = "dashboard.html";
+    }, 500);
+    return;
+  }
+
   const openOrders =
     Storage.getHotelOpenOrders(hotelId);
 
@@ -40,10 +53,10 @@ function renderOrders() {
 
     const statusLabel =
       kitchenStatus === "PENDING" ? "Pending" :
-      kitchenStatus === "PREPARING" ? "Preparing" :
-      kitchenStatus === "READY" ? "Ready" :
-      kitchenStatus === "SERVED" ? "Served" :
-      kitchenStatus;
+        kitchenStatus === "PREPARING" ? "Preparing" :
+          kitchenStatus === "READY" ? "Ready" :
+            kitchenStatus === "SERVED" ? "Served" :
+              kitchenStatus;
 
     const itemsHtml =
       order.items
@@ -123,7 +136,7 @@ function renderOrders() {
 }
 
 window.startCooking =
-  function(orderId) {
+  function (orderId) {
     updateStatus(
       orderId,
       "PREPARING"
@@ -131,7 +144,7 @@ window.startCooking =
   };
 
 window.markReady =
-  function(orderId) {
+  function (orderId) {
     updateStatus(
       orderId,
       "READY"
@@ -139,7 +152,7 @@ window.markReady =
   };
 
 window.markServed =
-  function(orderId) {
+  function (orderId) {
     updateStatus(
       orderId,
       "SERVED"

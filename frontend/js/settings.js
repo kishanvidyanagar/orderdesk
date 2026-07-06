@@ -16,7 +16,7 @@ const hotelId = currentUser.hotelId;
    UPDATE GREETING
 ========================= */
 
-document.getElementById("hotelGreeting").textContent = `${currentUser.hotelName} - Settings`;
+document.getElementById("hotelGreeting").textContent = `Settings`;
 
 /* =========================
    LOAD RESTAURANT INFO
@@ -56,7 +56,7 @@ function loadFeatureToggles() {
 document.getElementById("gstToggle")?.addEventListener("change", (e) => {
   const hotel = Storage.getHotel(hotelId);
   Storage.updateHotel(hotelId, { gstEnabled: e.target.checked });
-  
+
   // Auto-enable service charge if GST is enabled
   if (e.target.checked) {
     document.getElementById("serviceToggle").checked = true;
@@ -65,7 +65,7 @@ document.getElementById("gstToggle")?.addEventListener("change", (e) => {
     document.getElementById("serviceToggle").checked = false;
     document.getElementById("serviceToggle").disabled = false;
   }
-  
+
   showMessage("GST setting updated", "success");
 });
 

@@ -22,12 +22,43 @@
       <button class="hamburger" id="hamburger">☰</button>
 
       <div class="nav-actions" id="navMenu">
-        <a href="dashboard.html" class="button secondary">Dashboard</a>
-        <a href="waiter-management.html" class="button secondary">Waiters</a>
-        <a href="table-management.html" class="button secondary">Tables</a>
-        <a href="history.html" class="button secondary">History</a>
-        <a href="settings.html" class="button secondary">Settings</a>
-        <button id="logoutBtn" class="button secondary">Logout</button>
+
+        <a href="dashboard.html" class="button secondary">
+          Dashboard
+        </a>
+
+        <a id="menuNav" href="menu.html" class="button secondary">
+          Menu
+        </a>
+
+        <a href="orders.html" class="button secondary">
+          Orders
+        </a>
+
+        <a id="kitchenNav" href="kitchen.html" class="button secondary">
+          Kitchen
+        </a>
+
+        <a id="salesNav" href="sales.html" class="button secondary">
+          Sales
+        </a>
+
+        <a id="waitersNav" href="waiter-management.html" class="button secondary">
+          Waiters
+        </a>
+
+        <a id="historyNav" href="history.html" class="button secondary">
+          History
+        </a>
+
+        <a id="settingsNav" href="settings.html" class="button secondary">
+          Settings
+        </a>
+
+        <button id="logoutBtn" class="button secondary">
+          Logout
+        </button>
+
       </div>
 
     </header>
@@ -35,8 +66,8 @@
     <main>
 
       <div class="page-header">
-        <h2>Manage Waiters</h2>
-        <p>Add, edit, and manage waiter accounts for your hotel</p>
+        <h2 id="pageTitle">Manage Waiters</h2>
+        <p id="pageDescription">Add, edit, and manage waiter accounts for your hotel</p>
       </div>
 
       <!-- ADD WAITER FORM -->
@@ -80,6 +111,49 @@
         </div>
 
         <div id="waiterList" class="menu-list"></div>
+
+      </section>
+
+      <!-- COOKS SECTION -->
+      <section id="cookSection" class="card" style="display:none;">
+
+        <div class="page-header">
+          <h3 id="cookSectionTitle">Add New Cook</h3>
+        </div>
+
+        <form id="addCookForm">
+
+          <div class="field-row">
+            <div class="field-group">
+              <label>Cook Name</label>
+              <input id="cookName" type="text" placeholder="Enter cook name" required />
+            </div>
+            <div class="field-group">
+              <label>Login ID</label>
+              <input id="cookLoginId" type="text" placeholder="Unique login ID" required />
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label>Password</label>
+            <input id="cookPassword" type="password" placeholder="Enter password" required />
+          </div>
+
+          <button class="button primary" type="submit">
+            Add Cook
+          </button>
+
+        </form>
+
+      </section>
+
+      <section id="cookListSection" class="card" style="display:none;">
+
+        <div class="page-header">
+          <h3>Cooks List</h3>
+        </div>
+
+        <div id="cookList" class="menu-list"></div>
 
       </section>
 

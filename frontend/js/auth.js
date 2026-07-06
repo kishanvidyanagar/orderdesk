@@ -56,12 +56,12 @@ class OrderDeskAuth {
       return authUser;
     }
 
-    // Try Waiter login
+    // Try Waiter / Cook login
     const waiters = Storage.getWaiters();
     const waiter = Object.values(waiters).find(w => w.loginId === loginId);
     if (waiter && waiter.password === password) {
       if (!waiter.enabled) {
-        throw new Error("Waiter account is disabled");
+        throw new Error("Staff account is disabled");
       }
       const authUser = {
         uid: waiter.waiterId,
@@ -69,7 +69,7 @@ class OrderDeskAuth {
         hotelId: waiter.hotelId,
         loginId: waiter.loginId,
         waiterName: waiter.waiterName,
-        role: "waiter"
+        role: waiter.role || "waiter"
       };
       Storage.saveCurrentUser(authUser);
       this.currentUser = authUser;

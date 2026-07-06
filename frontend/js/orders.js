@@ -32,11 +32,14 @@ const gstAmountEl =
 const serviceAmountEl =
   document.getElementById("serviceAmount");
 
+const gstRowEl =
+  document.getElementById("gstRow");
+
+const serviceRowEl =
+  document.getElementById("serviceRow");
+
 const grandTotalEl =
   document.getElementById("grandTotal");
-
-const saveOrderBtn =
-  document.getElementById("saveOrderBtn");
 
 const completeOrderBtn =
   document.getElementById("completeOrderBtn");
@@ -196,8 +199,8 @@ function loadMenuItems() {
 
           <strong>
             ${formatCurrency(
-              item.price
-            )}
+        item.price
+      )}
           </strong>
 
         </div>
@@ -301,8 +304,8 @@ function renderCart() {
 
           <p>
             ${formatCurrency(
-              item.price
-            )}
+        item.price
+      )}
           </p>
 
         </div>
@@ -415,26 +418,67 @@ function removeItem(id) {
   renderCart();
 }
 
+function getBillConfig() {
+  const hotel = Storage.getHotel(hotelId);
+  const gstEnabled = Boolean(hotel?.gstEnabled);
+
+  return {
+    gstEnabled,
+    serviceEnabled: gstEnabled,
+    gstRate: 0.05,
+    serviceRate: 0.02
+  };
+}
+
+function calculateBill(subtotal) {
+  const {
+    gstEnabled,
+    serviceEnabled,
+    gstRate,
+    serviceRate
+  } = getBillConfig();
+
+  const gst = gstEnabled ? subtotal * gstRate : 0;
+  const service = gstEnabled && serviceEnabled ? subtotal * serviceRate : 0;
+  const total = subtotal + gst + service;
+
+  return {
+    subtotal,
+    gst,
+    service,
+    total,
+    gstEnabled
+  };
+}
+
+function updateBillVisibility(gstEnabled) {
+  if (gstRowEl) {
+    gstRowEl.style.display = gstEnabled ? "flex" : "none";
+  }
+
+  if (serviceRowEl) {
+    serviceRowEl.style.display = gstEnabled ? "flex" : "none";
+  }
+}
+
 function updateBill() {
   const subtotal =
     cart.reduce(
       (sum, item) =>
         sum +
         item.price *
-          item.quantity,
+        item.quantity,
       0
     );
 
-  const gst =
-    subtotal * 0.05;
+  const {
+    gst,
+    service,
+    total,
+    gstEnabled
+  } = calculateBill(subtotal);
 
-  const service =
-    subtotal * 0.02;
-
-  const total =
-    subtotal +
-    gst +
-    service;
+  updateBillVisibility(gstEnabled);
 
   subTotalEl.textContent =
     formatCurrency(
@@ -491,20 +535,15 @@ function saveOrder(
       (sum, item) =>
         sum +
         item.price *
-          item.quantity,
+        item.quantity,
       0
     );
 
-  const gst =
-    subtotal * 0.05;
-
-  const service =
-    subtotal * 0.02;
-
-  const total =
-    subtotal +
-    gst +
-    service;
+  const {
+    gst,
+    service,
+    total
+  } = calculateBill(subtotal);
 
   if (currentOrderId) {
     // Update existing order

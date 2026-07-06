@@ -89,7 +89,7 @@ export const Storage = {
   createHotel(hotelName, gstEnabled = false, cookEnabled = false) {
     const hotels = this.getHotels();
     const hotelId = "hotel_" + Date.now();
-    
+
     hotels[hotelId] = {
       hotelId,
       hotelName,
@@ -97,7 +97,7 @@ export const Storage = {
       cookEnabled,
       createdAt: new Date().toISOString()
     };
-    
+
     this.saveHotels(hotels);
     return hotelId;
   },
@@ -137,7 +137,7 @@ export const Storage = {
   createOwner(hotelId, ownerName, phone, loginId, password) {
     const owners = this.getOwners();
     const ownerId = "owner_" + Date.now();
-    
+
     owners[ownerId] = {
       ownerId,
       hotelId,
@@ -150,7 +150,7 @@ export const Storage = {
       enabled: true,
       createdAt: new Date().toISOString()
     };
-    
+
     this.saveOwners(owners);
     return ownerId;
   },
@@ -200,7 +200,7 @@ export const Storage = {
   createWaiter(hotelId, waiterName, loginId, password) {
     const waiters = this.getWaiters();
     const waiterId = "waiter_" + Date.now();
-    
+
     waiters[waiterId] = {
       waiterId,
       hotelId,
@@ -211,9 +211,28 @@ export const Storage = {
       enabled: true,
       createdAt: new Date().toISOString()
     };
-    
+
     this.saveWaiters(waiters);
     return waiterId;
+  },
+
+  createCook(hotelId, cookName, loginId, password) {
+    const waiters = this.getWaiters();
+    const cookId = "cook_" + Date.now();
+
+    waiters[cookId] = {
+      waiterId: cookId,
+      hotelId,
+      waiterName: cookName,
+      loginId,
+      password,
+      role: "cook",
+      enabled: true,
+      createdAt: new Date().toISOString()
+    };
+
+    this.saveWaiters(waiters);
+    return cookId;
   },
 
   updateWaiter(waiterId, updates) {
@@ -244,7 +263,12 @@ export const Storage = {
 
   getWaitersByHotel(hotelId) {
     const waiters = this.getWaiters();
-    return Object.values(waiters).filter(w => w.hotelId === hotelId);
+    return Object.values(waiters).filter(w => w.hotelId === hotelId && w.role === "waiter");
+  },
+
+  getCooksByHotel(hotelId) {
+    const waiters = this.getWaiters();
+    return Object.values(waiters).filter(w => w.hotelId === hotelId && w.role === "cook");
   },
 
   /* ====================================
@@ -263,7 +287,7 @@ export const Storage = {
   addMenuItem(hotelId, itemName, price, category = "General") {
     const items = this.getMenuItems();
     const itemId = "menu_" + Date.now();
-    
+
     items[itemId] = {
       id: itemId,
       hotelId,
@@ -272,7 +296,7 @@ export const Storage = {
       category,
       createdAt: new Date().toISOString()
     };
-    
+
     this.saveMenuItems(items);
     return itemId;
   },
@@ -312,13 +336,13 @@ export const Storage = {
   createOrder(hotelId, tableNumber) {
     const orders = this.getOrders();
     const orderId = "order_" + Date.now();
-    
+
     // Get next order number
     const hotelOrders = Object.values(orders).filter(o => o.hotelId === hotelId);
     const nextOrderNum = hotelOrders.length > 0
       ? Math.max(...hotelOrders.map(o => o.orderNumber)) + 1
       : 101;
-    
+
     orders[orderId] = {
       id: orderId,
       orderNumber: nextOrderNum,
@@ -335,7 +359,7 @@ export const Storage = {
       waiterName: null,
       orderDate: new Date().toISOString()
     };
-    
+
     this.saveOrders(orders);
     return orderId;
   },
@@ -382,7 +406,7 @@ export const Storage = {
     const orders = this.getOrders();
     return Object.values(orders).filter(o => {
       if (o.hotelId !== hotelId || o.status !== "COMPLETED") return false;
-      
+
       if (date) {
         const orderDate = new Date(o.orderDate).toDateString();
         const filterDate = new Date(date).toDateString();

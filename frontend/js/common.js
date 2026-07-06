@@ -1,10 +1,79 @@
 import { auth } from "./auth.js";
+import { Storage } from "./storage.js";
 
 document
   .getElementById("logoutBtn")
   ?.addEventListener("click", () => {
     auth.logout();
   });
+
+function updateKitchenNavigation() {
+  const currentUser = Storage.getCurrentUser();
+  const role = currentUser?.role;
+  const kitchenEnabled = Boolean(currentUser?.hotelId && Storage.getHotel(currentUser.hotelId)?.cookEnabled);
+
+  const dashboardLink = document.querySelector('a[href="dashboard.html"]');
+  const ordersLink = document.querySelector('a[href="orders.html"]');
+  const menuLink = document.querySelector('a[href="menu.html"]');
+  const kitchenLink = document.querySelector('a[href="kitchen.html"]');
+  const salesLink = document.querySelector('a[href="sales.html"]');
+  const waitersLink = document.querySelector('a[href="waiter-management.html"]');
+  const historyLink = document.querySelector('a[href="history.html"]');
+  const settingsLink = document.querySelector('a[href="settings.html"]');
+
+  const showLink = (link, visible) => {
+    if (!link) return;
+    link.style.display = visible ? "" : "none";
+  };
+
+  const showCustomerLinks = {
+    owner: {
+      dashboard: true,
+      orders: true,
+      menu: true,
+      kitchen: kitchenEnabled,
+      sales: true,
+      waiters: true,
+      history: true,
+      settings: true
+    },
+    waiter: {
+      dashboard: true,
+      orders: true,
+      menu: false,
+      kitchen: false,
+      sales: false,
+      waiters: false,
+      history: false,
+      settings: false
+    },
+    cook: {
+      dashboard: true,
+      orders: false,
+      menu: false,
+      kitchen: kitchenEnabled,
+      sales: false,
+      waiters: false,
+      history: false,
+      settings: false
+    }
+  };
+
+  const config = showCustomerLinks[role] || showCustomerLinks.owner;
+
+  showLink(dashboardLink, config.dashboard);
+  showLink(ordersLink, config.orders);
+  showLink(menuLink, config.menu);
+  showLink(kitchenLink, config.kitchen);
+  showLink(salesLink, config.sales);
+  showLink(waitersLink, config.waiters);
+  showLink(historyLink, config.history);
+  showLink(settingsLink, config.settings);
+
+  if (waitersLink) {
+    waitersLink.textContent = kitchenEnabled ? "Cooks / Waiters" : "Waiters";
+  }
+}
 
 // Hamburger menu toggle
 function initHamburgerMenu() {
@@ -40,11 +109,6 @@ function initHamburgerMenu() {
     }
   });
 
-  item.addEventListener("click", () => {
-    hamburger.classList.remove("active");
-    navMenu.classList.remove("active");
-  });
-
   // Close menu when a link or button is clicked
   const menuItems = navMenu.querySelectorAll("a, button");
   menuItems.forEach((item) => {
@@ -76,7 +140,13 @@ function initHamburgerMenu() {
 
 // Initialize after DOM is loaded
 if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", initHamburgerMenu);
+  document.addEventListener("DOMContentLoaded", () => {
+    updateKitchenNavigation();
+    initHamburgerMenu();
+  });
 } else {
+  updateKitchenNavigation();
   initHamburgerMenu();
 }
+
+window.addEventListener("storage", updateKitchenNavigation);
