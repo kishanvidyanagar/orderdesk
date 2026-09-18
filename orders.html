@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>OrderDesk - Orders</title>
+
+  <link rel="stylesheet" href="css/stylesheet.css" />
+</head>
+
+<body>
+
+  <div class="app-container">
+
+    <header class="app-header">
+
+      <div class="brand">
+        <h1>OrderDesk</h1>
+        <p>Order Management</p>
+      </div>
+
+      <button class="hamburger" id="hamburger">☰</button>
+
+      <div class="nav-actions" id="navMenu">
+
+        <a href="dashboard.html" class="button secondary">
+          Dashboard
+        </a>
+
+        <a id="menuNav" href="menu.html" class="button secondary">
+          Menu
+        </a>
+
+        <a href="orders.html" class="button secondary">
+          Orders
+        </a>
+
+        <a id="kitchenNav" href="kitchen.html" class="button secondary">
+          Kitchen
+        </a>
+
+        <a id="salesNav" href="sales.html" class="button secondary">
+          Sales
+        </a>
+
+        <a id="waitersNav" href="waiter-management.html" class="button secondary">
+          Waiters
+        </a>
+
+        <a id="historyNav" href="history.html" class="button secondary">
+          History
+        </a>
+
+        <a id="settingsNav" href="settings.html" class="button secondary">
+          Settings
+        </a>
+
+        <button id="logoutBtn" class="button secondary">
+          Logout
+        </button>
+
+      </div>
+
+    </header>
+
+    <main>
+
+      <div class="page-header">
+
+        <div>
+          <h2>Order Management</h2>
+          <p>
+            Create and manage table orders
+          </p>
+        </div>
+
+      </div>
+
+      <!-- TABLE SELECTION -->
+
+      <div class="card">
+
+        <div class="card-header">
+
+          <div>
+
+            <h3>Select Table</h3>
+
+            <p class="small-text">
+              Choose a table to start ordering
+            </p>
+
+          </div>
+
+        </div>
+
+        <div class="field-group">
+
+          <select id="tableSelect">
+            <option value="">
+              Select Table
+            </option>
+          </select>
+
+        </div>
+
+      </div>
+
+      <!-- CURRENT ORDER -->
+
+      <div id="tableOrderBanner" class="table-order-banner hidden">
+
+        <h3>
+          Active Table Order
+        </h3>
+
+        <p id="currentTableText"></p>
+
+        <p id="currentOrderNumber"></p>
+
+      </div>
+
+      <!-- ORDER GRID -->
+
+      <div class="order-grid">
+
+        <!-- LEFT SIDE -->
+
+        <div class="card order-panel">
+
+          <div class="card-header">
+
+            <div>
+
+              <h3>Menu Items</h3>
+
+              <p class="small-text">
+                Click items to add them
+              </p>
+
+            </div>
+
+          </div>
+
+          <div id="menuOrderList" class="menu-grid"></div>
+
+        </div>
+
+        <!-- RIGHT SIDE -->
+
+        <div class="order-summary">
+
+          <!-- CART -->
+
+          <div class="card">
+
+            <div class="card-header">
+
+              <div>
+
+                <h3>Current Order</h3>
+
+                <p class="small-text">
+                  Selected items
+                </p>
+
+              </div>
+
+            </div>
+
+            <div id="cartList" class="cart-list"></div>
+
+          </div>
+
+          <!-- BILL -->
+
+          <div class="card">
+
+            <h3>Bill Summary</h3>
+
+            <div class="bill-summary">
+
+              <div>
+                <span>Subtotal</span>
+                <strong id="subTotal">
+                  ₹0
+                </strong>
+              </div>
+
+              <div id="gstRow">
+                <span>GST (5%)</span>
+                <strong id="gstAmount">
+                  ₹0
+                </strong>
+              </div>
+
+              <div id="serviceRow">
+                <span>Service Charge (2%)</span>
+                <strong id="serviceAmount">
+                  ₹0
+                </strong>
+              </div>
+
+              <div>
+                <span>Total</span>
+                <strong id="grandTotal">
+                  ₹0
+                </strong>
+              </div>
+
+            </div>
+
+            <div class="order-actions" style="margin-top:20px;">
+
+              <button id="saveOrderBtn" class="button secondary">
+                Save Order
+              </button>
+
+              <button id="completeOrderBtn" class="button primary">
+                Complete & Pay
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </main>
+
+  </div>
+
+  <div id="messageBox" class="message hidden"></div>
+
+  <script type="module" src="js/orders.js"></script>
+  <script type="module" src="js/common.js"></script>
+
+</body>
+
+</html>

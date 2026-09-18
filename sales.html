@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>OrderDesk - Sales Report</title>
+
+  <link rel="stylesheet" href="css/stylesheet.css" />
+</head>
+
+<body>
+
+  <div class="app-container">
+
+    <header class="app-header">
+
+      <div class="brand">
+        <h1>OrderDesk</h1>
+        <p>Sales & Revenue Reports</p>
+      </div>
+
+      <button class="hamburger" id="hamburger">☰</button>
+
+      <div class="nav-actions" id="navMenu">
+
+        <a href="dashboard.html" class="button secondary">
+          Dashboard
+        </a>
+
+        <a id="menuNav" href="menu.html" class="button secondary">
+          Menu
+        </a>
+
+        <a href="orders.html" class="button secondary">
+          Orders
+        </a>
+
+        <a id="kitchenNav" href="kitchen.html" class="button secondary">
+          Kitchen
+        </a>
+
+        <a id="salesNav" href="sales.html" class="button secondary">
+          Sales
+        </a>
+
+        <a id="waitersNav" href="waiter-management.html" class="button secondary">
+          Waiters
+        </a>
+
+        <a id="historyNav" href="history.html" class="button secondary">
+          History
+        </a>
+
+        <a id="settingsNav" href="settings.html" class="button secondary">
+          Settings
+        </a>
+
+        <button id="logoutBtn" class="button secondary">
+          Logout
+        </button>
+
+      </div>
+
+    </header>
+
+    <main>
+
+      <div class="page-header">
+
+        <div>
+          <h2>Sales Report</h2>
+          <p>
+            Daily revenue and order history
+          </p>
+        </div>
+
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h3>Report Filters</h3>
+            <p class="small-text">Filter by date range and waiter</p>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label for="startDate">Start Date</label>
+          <input type="date" id="startDate" />
+        </div>
+
+        <div class="field-group">
+          <label for="endDate">End Date</label>
+          <input type="date" id="endDate" />
+        </div>
+
+        <div class="field-group">
+          <label for="waiterFilter">Waiter</label>
+          <select id="waiterFilter">
+            <option value="all">All Waiters</option>
+          </select>
+        </div>
+
+        <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top:12px;">
+          <button id="applyFiltersBtn" class="button secondary">Apply Filters</button>
+          <button id="resetFiltersBtn" class="button secondary">Reset Filters</button>
+        </div>
+      </div>
+
+      <!-- STATS -->
+
+      <div class="stats-grid">
+
+        <article class="stat-card">
+
+          <span>
+            Today's Sales
+          </span>
+
+          <strong id="reportSales">
+            ₹0
+          </strong>
+
+        </article>
+
+        <article class="stat-card">
+
+          <span>
+            Today's Orders
+          </span>
+
+          <strong id="reportOrders">
+            0
+          </strong>
+
+        </article>
+
+        <article class="stat-card">
+
+          <span>
+            Top Waiter
+          </span>
+
+          <strong id="topWaiter">
+            N/A
+          </strong>
+
+        </article>
+
+        <article class="stat-card full-width">
+
+          <span>
+            Lifetime Revenue
+          </span>
+
+          <strong id="lifetimeRevenue">
+            ₹0
+          </strong>
+
+        </article>
+        <article class="stat-card full-width">
+
+          <span>
+            Top Waiter Sales
+          </span>
+
+          <strong id="topWaiterSales">
+            ₹0
+          </strong>
+
+        </article>
+
+      </div>
+
+      <!-- SALES HISTORY -->
+
+      <div class="card">
+
+        <div class="card-header">
+
+          <div>
+
+            <h3>
+              Order History
+            </h3>
+
+            <p class="small-text">
+              Completed customer orders
+            </p>
+
+          </div>
+
+          <span id="historyCount" class="badge">
+            0 Orders
+          </span>
+
+        </div>
+
+        <div id="salesHistory" class="sales-history"></div>
+
+      </div>
+
+    </main>
+
+  </div>
+
+  <div id="messageBox" class="message hidden"></div>
+
+  <script type="module" src="js/sales.js"></script>
+  <script type="module" src="js/common.js"></script>
+
+</body>
+
+</html>

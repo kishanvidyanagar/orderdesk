@@ -1,5 +1,7 @@
 # OrderDesk Authentication System Redesign - Implementation Summary
 
+> Persistence is now Supabase-backed. See `docs/README.md` and the SQL migration under `supabase/migrations/` for the active backend setup. This historical summary describes the original frontend behavior and data shapes preserved by the Supabase adapter.
+
 ## Overview
 Complete redesign of OrderDesk authentication system from email-based to Login ID-based authentication while preserving all existing business logic and functionality.
 
@@ -14,7 +16,7 @@ Complete redesign of OrderDesk authentication system from email-based to Login I
   - Replaced corrupted HTML content with complete JavaScript storage module
   - Centralized data persistence with new collections: admins, owners, waiters, hotels, orders, menu, tables
   - Provides comprehensive API for all data operations
-  - Session management using getCurrentUser() / saveCurrentUser()
+  - Session management using getCurrentUser() and the Supabase Auth session
 
 - **auth.js** (UPDATED)
   - Replaced email-based authentication with loginId authentication
@@ -262,7 +264,7 @@ Complete redesign of OrderDesk authentication system from email-based to Login I
 ## 🛡️ Security Notes
 
 **Current Implementation:**
-- Plain-text password storage in localStorage (DEMO ONLY)
+- Plain-text password storage (removed; passwords are handled by Supabase Auth)
 - No password hashing
 - No rate limiting on login attempts
 - localhost-only (no HTTPS)

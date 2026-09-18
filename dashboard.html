@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>OrderDesk - Dashboard</title>
+
+  <link rel="stylesheet" href="css/stylesheet.css" />
+</head>
+
+<body>
+
+  <div class="app-container">
+
+    <header class="app-header">
+
+      <div class="brand">
+        <h1>OrderDesk</h1>
+        <p id="hotelGreeting">
+          Welcome Back
+        </p>
+      </div>
+
+      <button class="hamburger" id="hamburger">☰</button>
+
+      <div class="nav-actions" id="navMenu">
+
+        <a href="dashboard.html" class="button secondary">
+          Dashboard
+        </a>
+
+        <a id="menuNav" href="menu.html" class="button secondary">
+          Menu
+        </a>
+
+        <a href="orders.html" class="button secondary">
+          Orders
+        </a>
+
+        <a id="kitchenNav" href="kitchen.html" class="button secondary">
+          Kitchen
+        </a>
+
+        <a id="salesNav" href="sales.html" class="button secondary">
+          Sales
+        </a>
+
+        <a id="waitersNav" href="waiter-management.html" class="button secondary">
+          Waiters
+        </a>
+
+        <a id="historyNav" href="history.html" class="button secondary">
+          History
+        </a>
+
+        <a id="settingsNav" href="settings.html" class="button secondary">
+          Settings
+        </a>
+
+        <button id="logoutBtn" class="button secondary">
+          Logout
+        </button>
+
+      </div>
+
+    </header>
+
+    <main>
+
+      <div class="page-header">
+
+        <div>
+          <h2>Dashboard</h2>
+          <p>
+            Restaurant Overview
+          </p>
+        </div>
+
+      </div>
+
+      <!-- STATS -->
+
+      <div class="stats-grid">
+
+        <article class="stat-card">
+
+          <span>
+            Total Sales Today
+          </span>
+
+          <strong id="todaySales">
+            ₹0
+          </strong>
+
+        </article>
+
+        <article class="stat-card">
+
+          <span>
+            Total Orders Today
+          </span>
+
+          <strong id="todayOrders">
+            0
+          </strong>
+
+        </article>
+
+        <article class="stat-card full-width">
+
+          <span>
+            Active Menu Items
+          </span>
+
+          <strong id="menuCount">
+            0
+          </strong>
+
+        </article>
+
+      </div>
+
+      <!-- TABLE STATUS -->
+
+      <div class="card table-status-card">
+
+        <div class="card-header">
+
+          <div>
+
+            <h3>
+              Table Status
+            </h3>
+
+            <p id="tableCountLabel" class="small-text">
+              10 Tables Configured
+            </p>
+
+          </div>
+
+          <button id="addTableBtn" class="button secondary">
+            Add Table
+          </button>
+
+        </div>
+
+        <div id="tableStatusGrid" class="table-status-grid"></div>
+
+      </div>
+
+      <!-- OPEN ORDERS -->
+
+      <div class="card">
+
+        <div class="card-header">
+
+          <div>
+
+            <h3>
+              Open Orders
+            </h3>
+
+            <p class="small-text">
+              Continue active table orders
+            </p>
+
+          </div>
+
+        </div>
+
+        <div id="openOrdersList" class="sales-history"></div>
+
+      </div>
+
+    </main>
+
+  </div>
+
+  <div id="messageBox" class="message hidden"></div>
+
+  <script type="module" src="js/dashboard.js"></script>
+  <script type="module" src="js/common.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Settings - OrderDesk</title>
+  <link rel="stylesheet" href="css/stylesheet.css" />
+</head>
+
+<body>
+
+  <div class="app-container">
+
+    <header class="app-header">
+
+      <div class="brand">
+        <h1>OrderDesk</h1>
+        <p id="hotelGreeting">Settings</p>
+      </div>
+
+      <button class="hamburger" id="hamburger">☰</button>
+
+      <div class="nav-actions" id="navMenu">
+
+        <a href="dashboard.html" class="button secondary">
+          Dashboard
+        </a>
+
+        <a id="menuNav" href="menu.html" class="button secondary">
+          Menu
+        </a>
+
+        <a href="orders.html" class="button secondary">
+          Orders
+        </a>
+
+        <a id="kitchenNav" href="kitchen.html" class="button secondary">
+          Kitchen
+        </a>
+
+        <a id="salesNav" href="sales.html" class="button secondary">
+          Sales
+        </a>
+
+        <a id="waitersNav" href="waiter-management.html" class="button secondary">
+          Waiters
+        </a>
+
+        <a id="historyNav" href="history.html" class="button secondary">
+          History
+        </a>
+
+        <a id="settingsNav" href="settings.html" class="button secondary">
+          Settings
+        </a>
+
+        <button id="logoutBtn" class="button secondary">
+          Logout
+        </button>
+
+      </div>
+
+    </header>
+
+    <main>
+
+      <div class="page-header">
+        <h2>Settings</h2>
+        <p>Configure your restaurant and account settings</p>
+      </div>
+
+      <!-- RESTAURANT DETAILS -->
+      <section class="card">
+
+        <div class="page-header">
+          <h3>Restaurant Details</h3>
+        </div>
+
+        <form id="restaurantForm">
+
+          <div class="field-row">
+            <div class="field-group">
+              <label>Hotel Name</label>
+              <input id="hotelNameInput" type="text" placeholder="Hotel name" disabled />
+            </div>
+            <div class="field-group">
+              <label>Owner Name</label>
+              <input id="ownerNameInput" type="text" placeholder="Owner name" disabled />
+            </div>
+          </div>
+
+          <div class="field-row">
+            <div class="field-group">
+              <label>Phone</label>
+              <input id="phoneInput" type="text" placeholder="Phone number" disabled />
+            </div>
+          </div>
+
+        </form>
+
+      </section>
+
+      <!-- FEATURES -->
+      <section class="card">
+
+        <div class="page-header">
+          <h3>Features</h3>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 15px;">
+
+          <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+            <input type="checkbox" id="gstToggle" />
+            <span>Enable GST (5% tax)</span>
+          </label>
+
+          <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+            <input type="checkbox" id="cookToggle" />
+            <span>Enable Kitchen Module</span>
+          </label>
+
+          <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+            <input type="checkbox" id="serviceToggle" />
+            <span>Enable Service Charge (2%)</span>
+          </label>
+
+        </div>
+
+      </section>
+
+      <!-- CHANGE PASSWORD -->
+      <section class="card">
+
+        <div class="page-header">
+          <h3>Change Password</h3>
+        </div>
+
+        <form id="passwordForm">
+
+          <div class="field-group">
+            <label>Current Password</label>
+            <input id="currentPassword" type="password" placeholder="Enter current password" required />
+          </div>
+
+          <div class="field-row">
+            <div class="field-group">
+              <label>New Password</label>
+              <input id="newPassword" type="password" placeholder="Enter new password" required />
+            </div>
+            <div class="field-group">
+              <label>Confirm Password</label>
+              <input id="confirmPassword" type="password" placeholder="Confirm new password" required />
+            </div>
+          </div>
+
+          <button class="button primary" type="submit">
+            Change Password
+          </button>
+
+        </form>
+
+      </section>
+
+    </main>
+
+  </div>
+
+  <div id="messageBox" class="message hidden"></div>
+
+  <script type="module" src="js/settings.js"></script>
+  <script type="module" src="js/common.js"></script>
+
+</body>
+
+</html>

@@ -1,43 +1,27 @@
 # OrderDesk
 
-A responsive single-page restaurant and hotel ordering dashboard built with HTML, CSS, JavaScript, Firebase Authentication, and Firebase Firestore.
+OrderDesk is a responsive restaurant ordering dashboard built with HTML, CSS, and browser JavaScript. The frontend uses Supabase Auth and Supabase Postgres for authentication, tenant data, orders, menu items, table configuration, and role-based access.
 
-## Files
+## Supabase setup
 
-- `index.html` — main application UI
-- `styles.css` — responsive styling
-- `script.js` — Firebase auth, Firestore, and application logic
-- `firebase.rules` — Firestore security rules for hotel-specific access
+The browser client is configured in `frontend/js/supabase.js` with the project URL and publishable key. Privileged account operations use the JWT-protected `manage-account` Edge Function. Service-role credentials are never included in browser code.
 
-## Setup
+The reproducible database migration is:
 
-1. Create a Firebase project at https://console.firebase.google.com/
-2. Enable Email/Password Authentication under Authentication > Sign-in method
-3. Create a Firestore database in production or test mode
-4. Replace the placeholder values in `script.js` with your Firebase config:
+`supabase/migrations/20260918000100_orderdesk_schema.sql`
 
-```js
-const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID"
-};
-```
+It creates the hotels, profiles, menu_items, table_configs, orders, and order_items tables, their relationships, indexes, triggers, helper functions, and RLS policies.
 
-5. Deploy the security rules in Firestore using `firebase.rules` or the Firebase console.
+## Authentication
 
-## Run Locally
+The existing Login ID fields remain unchanged. Login IDs map to internal synthetic Auth email aliases; passwords are handled only by Supabase Auth. Profiles store the application role and hotel assignment. Admins create owner accounts, and owners create waiter/cook accounts through the server-side Edge Function.
 
-Open `index.html` in a browser or use a local server such as Live Server in VS Code.
+An initial admin Auth user and matching `profiles` row must be provisioned through the Supabase dashboard or a trusted administrative process before the first login.
 
-## Features
+## Run locally
 
-- Hotel registration and login
-- Menu management (add, edit, delete items)
-- Table order creation with quantity control
-- Automatic bill calculation
-- Daily sales report and order history
-- Hotel-specific Firestore data separation
+Open `frontend/index.html` in a browser or use a local server such as VS Code Live Server. ES modules and the Supabase client require a browser origin in environments that block module imports from `file://` URLs.
+
+## Security
+
+RLS is enabled on every application table. Policies restrict records by the authenticated profile's role and `hotel_id`. Frontend checks are for navigation and usability only; database policies are the security boundary.

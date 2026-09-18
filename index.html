@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>OrderDesk - Login</title>
+
+  <link rel="stylesheet" href="css/stylesheet.css" />
+</head>
+
+<body>
+
+  <div class="app-container">
+
+    <header class="app-header">
+      <div class="brand">
+        <h1>OrderDesk</h1>
+        <p>Restaurant & Hotel Management</p>
+      </div>
+    </header>
+
+    <main>
+
+      <section class="card auth-card">
+
+        <div class="page-header">
+          <h2>Login</h2>
+          <p>OrderDesk - Restaurant & Hotel Management</p>
+        </div>
+
+        <form id="loginForm" class="auth-form active">
+
+          <div class="field-group">
+            <label>Login ID</label>
+            <input id="loginId" type="text" placeholder="Enter your login ID" required />
+          </div>
+
+          <div class="field-group">
+            <label>Password</label>
+            <input id="loginPassword" type="password" placeholder="Enter your password" required />
+          </div>
+
+          <button type="submit" class="button primary">
+            Login
+          </button>
+
+        </form>
+
+      </section>
+
+    </main>
+
+  </div>
+
+  <div id="messageBox" class="message hidden"></div>
+
+  <script type="module" src="js/auth.js"></script>
+  <script type="module" src="js/common.js"></script>
+
+</body>
+
+</html>
