@@ -16,6 +16,6 @@ export async function loginAdmin(loginId, password) {
 export function requireAdmin() {
   const currentUser = Storage.getCurrentUser();
   if (!currentUser || currentUser.role !== "admin") {
-    window.location.href = "admin-login.html";
+    window.location.replace("index.html");
   }
 }

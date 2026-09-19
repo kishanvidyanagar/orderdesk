@@ -114,7 +114,7 @@ export const Storage = {
   getOwner(ownerId) { return state.owners[ownerId] || null; },
   getOwnerByLoginId(loginId) { return Object.values(state.owners).find(owner => owner.loginId.toLowerCase() === loginId.toLowerCase()); },
   getOwnersByHotel(hotelId) { return Object.values(state.owners).filter(owner => owner.hotelId === hotelId); },
-  createOwner(hotelId, ownerName, phone, loginId, password) { const id = crypto.randomUUID(); state.owners[id] = { ownerId: id, hotelId, hotelName: this.getHotel(hotelId)?.hotelName || "", ownerName, phone, loginId, role: "owner", enabled: true, createdAt: new Date().toISOString() }; void manageAccount({ action: "create", id, hotelId, displayName: ownerName, phone, loginId, password, role: "owner" }).then(() => this.refresh()); return id; },
+  async createOwner(hotelId, ownerName, phone, loginId, password) { const id = crypto.randomUUID(); await manageAccount({ action: "create", id, hotelId, displayName: ownerName, phone, loginId, password, role: "owner" }); await this.refresh(); return id; },
   updateOwner(ownerId, updates) { state.owners[ownerId] = { ...state.owners[ownerId], ...updates }; void manageAccount({ action: "update", id: ownerId, ...updates }).then(() => this.refresh()); },
   deleteOwner(ownerId) { delete state.owners[ownerId]; void manageAccount({ action: "delete", id: ownerId }).then(() => this.refresh()); },
 

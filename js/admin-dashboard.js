@@ -7,7 +7,7 @@ import { showMessage } from "./utils.js";
 
 const currentUser = Storage.getCurrentUser();
 if (!currentUser || currentUser.role !== "admin") {
-  window.location.href = "admin-login.html";
+  window.location.replace("index.html");
 }
 
 document.getElementById("changeAdminPasswordBtn")?.addEventListener("click", async () => {
@@ -195,7 +195,7 @@ window.deleteHotel = function(hotelId) {
 
 const ownerForm = document.getElementById("ownerForm");
 
-ownerForm?.addEventListener("submit", (e) => {
+ownerForm?.addEventListener("submit", async (e) => {
   e.preventDefault();
 
   const hotelId = document.getElementById("ownerHotel").value;
@@ -216,12 +216,15 @@ ownerForm?.addEventListener("submit", (e) => {
     return;
   }
 
-  Storage.createOwner(hotelId, ownerName, phone, loginId, password);
-  
-  showMessage("Owner created successfully", "success");
-  ownerForm.reset();
-  loadOwners();
-  populateHotelDropdowns();
+  try {
+    await Storage.createOwner(hotelId, ownerName, phone, loginId, password);
+    showMessage("Owner created successfully", "success");
+    ownerForm.reset();
+    loadOwners();
+    populateHotelDropdowns();
+  } catch (error) {
+    showMessage(error.message || "Unable to create owner account", "error");
+  }
 });
 
 function populateHotelDropdowns() {
